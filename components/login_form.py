@@ -1,4 +1,5 @@
 import flet as ft
+from flet_core import TextSpan
 
 from services import AuthService, auth_service
 
@@ -78,6 +79,16 @@ class LoginForm(ft.UserControl):
                     width=300,
                     height=50,
                     on_click=lambda e: print("Login con Google")
+                ),
+                ft.Text(
+                    '¿Aún no tienes cuenta? ',
+                    spans=[
+                        ft.TextSpan(
+                            text="Regístrate",
+                            style=ft.TextStyle(color=ft.colors.BLUE, decoration="underline", weight=ft.FontWeight.BOLD),
+                            on_click=lambda e: self.page.go("/register")
+                        )
+                    ],
                 ),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
