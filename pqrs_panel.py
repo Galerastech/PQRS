@@ -91,6 +91,7 @@ def main(page: ft.Page):
         ft.ElevatedButton("SUGERENCIA", width=150, bgcolor=ft.colors.BLUE_GREY_100, on_click=lambda e: page.open(dlg_modal_s)),
         ft.ElevatedButton("FELICITACIÓN", width=150, bgcolor=ft.colors.BLUE_GREY_100, on_click=lambda e: page.open(dlg_modal_f)),
     )
+    Niñoooooo
 
 
 ft.app(main)
