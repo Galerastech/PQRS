@@ -1,5 +1,5 @@
 import flet as ft
-from flet_core import TextSpan
+from flet_core import TextStyle
 
 from services import AuthService, auth_service
 
@@ -11,14 +11,16 @@ class LoginForm(ft.UserControl):
 
         self.email_field = ft.TextField(
             label="Email",
-            border_color=ft.colors.BLUE_400,
+            label_style=TextStyle(color=ft.colors.BLACK),
+            border_color=ft.colors.DEEP_PURPLE_500,
             width=300,
             autofocus=True
         )
 
         self.password_field = ft.TextField(
             label="Contraseña",
-            border_color=ft.colors.BLUE_400,
+            label_style=TextStyle(color=ft.colors.BLACK),
+            border_color=ft.colors.DEEP_PURPLE_500,
             password=True,
             can_reveal_password=True,
             width=300
@@ -61,7 +63,10 @@ class LoginForm(ft.UserControl):
                     text="Iniciar Sesión",
                     width=300,
                     height=50,
-                    on_click=self.handle_login
+                    bgcolor='#673ab7',
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
+                    on_click=self.handle_login,
+                    color=ft.colors.WHITE
                 ),
                 ft.Container(
                     content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
@@ -82,10 +87,11 @@ class LoginForm(ft.UserControl):
                 ),
                 ft.Text(
                     '¿Aún no tienes cuenta? ',
+                    color=ft.colors.DEEP_PURPLE_500,
                     spans=[
                         ft.TextSpan(
                             text="Regístrate",
-                            style=ft.TextStyle(color=ft.colors.BLUE, decoration="underline", weight=ft.FontWeight.BOLD),
+                            style=ft.TextStyle(color=ft.colors.DEEP_PURPLE_500, weight=ft.FontWeight.BOLD),
                             on_click=lambda e: self.page.go("/register")
                         )
                     ],
