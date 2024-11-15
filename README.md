@@ -1,7 +1,7 @@
 # PQRS
 
 <div align="center">
-  <img src="https://github.com/Galerastech/PQRS/blob/develop/assets/icons/icon_web.jpeg?raw=true" alt="Logo del proyecto" style="width:200px;">
+  <img src="https://github.com/Galerastech/PQRS/blob/develop/assets/icons/icon_web.jpeg?raw=true" alt="Logo del proyecto" style="width:200px; border-radius: 100%;">
 </div>
 
 ## Inicialización del Proyecto
