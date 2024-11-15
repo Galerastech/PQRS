@@ -60,7 +60,8 @@ class RegisterForm(ft.UserControl):
                     height=50,
                     color=ft.colors.WHITE,
                     bgcolor="#673ab7",
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10))
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
+                    on_click=self.auth_service.login(self.username_field.value, self.password_field.value)
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
                         color=ft.colors.DEEP_PURPLE_500,

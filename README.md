@@ -1,9 +1,1 @@
-# A pqrs Flet app
-
-An example of a minimal Flet app.
-
-To run the app:
-
-```
-flet run [app_directory]
-```
+<img align="center" src="https://drive.google.com/file/d/19dIha2XqXSXeGo9BjhetbQ8mCtX9aToZ/view?usp=sharing">
