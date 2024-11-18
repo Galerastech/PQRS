@@ -40,6 +40,27 @@ class RegisterForm(ft.UserControl):
             text_align=ft.TextAlign.CENTER
         )
 
+    def handle_register(self,_):
+        user_data = {
+            "username": self.username_field.value,
+            "email": self.email_field.value,
+            "password": self.password_field.value,
+            "confirm_password": self.confirm_password_field.value,
+        }
+        success, message = self.auth_service.validate_register_user(**user_data)
+        if success:
+            self.error_text.value = message
+            self.error_text.style = ft.colors.GREEN
+            print("Se va para el login")
+            # self.page.go("/login")
+        else:
+            self.error_text.style = ft.colors.RED
+            self.error_text.value = message
+
+        self.update()
+
+
+
     def build(self):
         return ft.Column(
             controls=[
@@ -61,7 +82,7 @@ class RegisterForm(ft.UserControl):
                     color=ft.colors.WHITE,
                     bgcolor="#673ab7",
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    on_click=self.auth_service.login(self.username_field.value, self.password_field.value)
+                    on_click=self.handle_register
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
                         color=ft.colors.DEEP_PURPLE_500,
