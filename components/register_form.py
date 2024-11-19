@@ -34,32 +34,38 @@ class RegisterForm(ft.UserControl):
             width=300,
             border_color=ft.colors.DEEP_PURPLE_500,
         )
-        self.error_text = ft.Text(
-            color=ft.colors.RED_400,
-            size=12,
-            text_align=ft.TextAlign.CENTER
-        )
+        self.alert = ft.AlertDialog()
 
-    def handle_register(self,_):
+    def handle_register(self, _):
         user_data = {
-            "username": self.username_field.value,
-            "email": self.email_field.value,
+            "username": self.username_field.value.strip(),
+            "email": self.email_field.value.strip(),
             "password": self.password_field.value,
             "confirm_password": self.confirm_password_field.value,
         }
         success, message = self.auth_service.validate_register_user(**user_data)
         if success:
-            self.error_text.value = message
-            self.error_text.style = ft.colors.GREEN
-            print("Se va para el login")
-            # self.page.go("/login")
+            self.alert.title = ft.Text(
+                "Registro de Usuario Exitoso",
+                text_align=ft.TextAlign.CENTER,
+                weight=ft.FontWeight.BOLD
+            )
+            self.alert.content = ft.Text("Usuario registrado correctamente. Serás redirigido al inicio de sesion")
+            self.alert.on_dismiss = lambda: self.page.go("/login")
         else:
-            self.error_text.style = ft.colors.RED
-            self.error_text.value = message
+            self.alert.title = ft.Text(
+                "Error en el registro de Usuario",
+                text_align=ft.TextAlign.CENTER,
+                weight=ft.FontWeight.BOLD
+            )
+            self.alert.content = ft.Text(
+                message
+            )
+            self.alert.on_dismiss = None
 
-        self.update()
-
-
+        self.page.dialog = self.alert
+        self.alert.open = True
+        self.page.update()
 
     def build(self):
         return ft.Column(
@@ -74,7 +80,6 @@ class RegisterForm(ft.UserControl):
                 self.email_field,
                 self.password_field,
                 self.confirm_password_field,
-                self.error_text,
                 ft.ElevatedButton(
                     text="Crear cuenta",
                     width=300,
@@ -90,7 +95,10 @@ class RegisterForm(ft.UserControl):
                             "Iniciar Sesion",
                             style=ft.TextStyle(
                                 weight=ft.FontWeight.BOLD,
-                                color=ft.colors.DEEP_PURPLE_500), )
+                                color=ft.colors.DEEP_PURPLE_500
+                            ),
+                            on_click=lambda _: self.page.go("/login")
+                        )
                         ]
                         )
             ],
