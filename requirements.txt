@@ -1,0 +1,10 @@
+flet==0.22.*
+jwt
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+python-dotenv
+alembic
+passlib
+bcrypt
