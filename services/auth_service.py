@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 
 import requests
 
@@ -45,7 +45,7 @@ class AuthService:
     def is_authenticated(self) -> bool:
         return self.current_user is not None
 
-    def validate_register_user(self, **kwargs, ) -> tuple[bool, str]:
+    def validate_register_user(self, **kwargs, ) -> Tuple[bool, str]:
         email = kwargs.get("email")
         username = kwargs.get("username")
         password = kwargs.get("password")
@@ -60,7 +60,7 @@ class AuthService:
         success, message = self.register_user(email=email, username=username, password=password)
         return success, message
 
-    def register_user(self, **kwargs) -> tuple[bool, str]:
+    def register_user(self, **kwargs) -> Tuple[bool, str]:
         try:
             response = requests.post(
                 "http://localhost:8001/auth/signup",
