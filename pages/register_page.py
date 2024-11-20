@@ -12,7 +12,7 @@ class RegisterPage(ft.UserControl):
     def build(self):
         return ft.Container(
             content=ft.Column([
-                RegisterForm(self.auth)
+                ft.Text("Register Page")
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
             margin=ft.margin.only(top=50)
         )

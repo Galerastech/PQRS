@@ -1,22 +1,35 @@
 import flet as ft
 
-from layouts.auth_layout import AuthLayout
+from layouts import AuthLayout
 from pages import LoginPage
 from pages.register_page import RegisterPage
-from services import AuthService
-
-ROUTES = {
-    "/login": lambda page: AuthLayout(LoginPage(page)),
-    "/register": lambda page: AuthLayout(RegisterPage(page))
-}
 
 
 class Router:
     def __init__(self, page: ft.Page):
         self.page = page
+        self.page.on_route_change = self.on_route_change
+        self.auth_layout = AuthLayout(page)
 
-    def navigate(self, route: str):
-       self.page.controls.clear()
-       view = ROUTES.get(route, lambda page: ft.Text("404 Not Found"))
-       self.page.add(view(self.page))
-       self.page.update()
+        self.routes = {
+            "/login": {"layout": self.auth_layout, "page": LoginPage(page)},
+            "/register": {"layout": self.auth_layout, "page": RegisterPage(page)},
+        }
+
+        self.navigate("/login")
+
+    def on_route_change(self, e):
+        self.navigate(self.page.route)
+
+    def navigate(self, route):
+        if route in self.routes:
+            self.page.controls.clear()
+            layout = self.routes[route]["layout"]
+            page = self.routes[route]["page"]
+
+            layout.update_content(page.build())
+            self.page.add(layout.build())
+        else:
+            self.page.controls.clear()
+            self.page.add(ft.Text("404 - Page not found"))
+        self.page.update()
