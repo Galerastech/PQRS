@@ -3,16 +3,15 @@ from components.register_form import RegisterForm
 from services import AuthService
 
 
-class RegisterPage(ft.UserControl):
+class RegisterPage:
     def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
-        self.auth = AuthService()
+        self.register_page = RegisterForm(self.page)
 
     def build(self):
         return ft.Container(
-            content=ft.Column([
-                ft.Text("Register Page")
-            ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-            margin=ft.margin.only(top=50)
+            content=self.register_page.build(),
+            expand=True,
+            padding=ft.padding.symmetric(horizontal=20, vertical=20),
         )

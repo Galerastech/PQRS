@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
+import requests
+
 
 @dataclass
 class User:
@@ -55,21 +57,18 @@ class AuthService:
         if password != confirm_password:
             return False, "las contraseñas no coinciden"
 
-        # success, message = self.register_user(email=email, username=username, password=password)
-        # return success, message
+        success, message = self.register_user(email=email, username=username, password=password)
+        return success, message
 
-    # def register_user(self, **kwargs) -> Tuple[bool, str]:
-    #     try:
-    #         response = requests.post(
-    #             "http://localhost:8001/auth/signup",
-    #             json=kwargs
-    #         )
-    #         if response.status_code == 200:
-    #             return True, "Usuario registrado correctamente"
-    #         else:
-    #             return False, response.json().get("detail")
-    #     except requests.exceptions.RequestException as e:
-    #         return False, str(e)
-    # def register_user(self, email: str, username: str, password:str, confirm_passwod:str) ->tuple[bool, str]:
-    #     if not email or not username or not password or not confirm_passwod:
-    #         return False, "Todos los campos son requeridos"
+    def register_user(self, **kwargs) -> Tuple[bool, str]:
+        try:
+            response = requests.post(
+                "http://localhost:8001/auth/signup",
+                json=kwargs
+            )
+            if response.status_code == 200:
+                return True, "Usuario registrado correctamente"
+            else:
+                return False, response.json().get("detail")
+        except requests.exceptions.RequestException as e:
+            return False, str(e)

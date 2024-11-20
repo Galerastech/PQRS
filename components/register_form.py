@@ -4,9 +4,9 @@ from flet_core import TextSpan, TextStyle
 from services import AuthService
 
 
-class RegisterForm(ft.Container):
-    def __init__(self):
-        super().__init__()
+class RegisterForm:
+    def __init__(self, page: ft.Page):
+        self.page = page
         self.auth_service = AuthService()
 
         self.username_field = ft.TextField(
@@ -36,7 +36,7 @@ class RegisterForm(ft.Container):
         )
         self.alert = ft.AlertDialog()
 
-        self.content = ft.Column(
+        self.form = ft.Column(
             controls=[
                 ft.Text(
                     "Sing Up",
@@ -89,7 +89,8 @@ class RegisterForm(ft.Container):
                 weight=ft.FontWeight.BOLD
             )
             self.alert.content = ft.Text("Usuario registrado correctamente. Serás redirigido al inicio de sesion")
-            self.alert.on_dismiss = lambda: self.page.go("/login")
+
+            self.page.go("/login")
         else:
             self.alert.title = ft.Text(
                 "Error en el registro de Usuario",
@@ -105,6 +106,5 @@ class RegisterForm(ft.Container):
         self.alert.open = True
         self.page.update()
 
-
-def build(self):
-    return self.content
+    def build(self):
+        return self.form
