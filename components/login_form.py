@@ -36,10 +36,11 @@ class LoginForm(ft.UserControl):
         success, message = self.auth_service.login(self.email_field.value, self.password_field.value)
 
         if success:
-            self.error_text.value = message
+            self.error_text.value = ''
             self.error_text.color = ft.colors.GREEN_400
             self.error_text.value = 'Login successful!'
-
+            print("Se va para la dashboard")
+            # self.page.go("/dashboard")
         else:
             self.error_text.value = ''
             self.error_text.color = ft.colors.RED_400
