@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
-import requests
-
 
 @dataclass
 class User:
@@ -45,6 +43,7 @@ class AuthService:
     def is_authenticated(self) -> bool:
         return self.current_user is not None
 
+<<<<<<< HEAD
     def validate_register_user(self, **kwargs, ) -> Tuple[bool, str]:
         email = kwargs.get("email")
         username = kwargs.get("username")
@@ -72,3 +71,8 @@ class AuthService:
                 return False, response.json().get("detail")
         except requests.exceptions.RequestException as e:
             return False, str(e)
+=======
+    def register_user(self, email: str, username: str, password:str, confirm_passwod:str) ->tuple[bool, str]:
+        if not email or not username or not password or not confirm_passwod:
+            return False, "Todos los campos son requeridos"
+>>>>>>> parent of 63d060f (add-register-funcionality)

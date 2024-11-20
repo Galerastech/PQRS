@@ -36,6 +36,7 @@ class RegisterForm(ft.UserControl):
         )
         self.alert = ft.AlertDialog()
 
+<<<<<<< HEAD
     def handle_register(self, _):
         user_data = {
             "username": self.username_field.value.strip(),
@@ -67,6 +68,8 @@ class RegisterForm(ft.UserControl):
         self.alert.open = True
         self.page.update()
 
+=======
+>>>>>>> parent of 63d060f (add-register-funcionality)
     def build(self):
         return ft.Column(
             controls=[
@@ -87,7 +90,7 @@ class RegisterForm(ft.UserControl):
                     color=ft.colors.WHITE,
                     bgcolor="#673ab7",
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    on_click=self.handle_register
+                    on_click=self.auth_service.login(self.username_field.value, self.password_field.value)
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
                         color=ft.colors.DEEP_PURPLE_500,
