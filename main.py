@@ -44,6 +44,10 @@ def main(page: ft.Page):
         "Poppins BlackItalic": "fonts/poppins/Poppins-BlackItalic.ttf",
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
+
+
+    # TODO: Crear un buen main
+
     Router(page)
     page.go("/login")
 
