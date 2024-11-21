@@ -46,8 +46,6 @@ def main(page: ft.Page):
     }
 
 
-    # TODO: Crear un buen main
-
     Router(page)
     page.go("/login")
 
