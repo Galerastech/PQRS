@@ -54,7 +54,7 @@ class RegisterForm:
                     height=50,
                     color=ft.colors.WHITE,
                     bgcolor="#673ab7",
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder()),
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                     on_click=self.handle_register
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
