@@ -18,7 +18,7 @@ app = FastAPI(
 user_service = UserService()
 
 
-@app.post("/auth/signup")
+@app.post("/auth/signup",tags=["Auth"])
 async def sign_up(user: UserSchema, db: Session = Depends(get_db)):
     exist_user = db.query(User).filter(
         (User.email == user.email) |
