@@ -8,7 +8,7 @@ from router import Router
 def main(page: ft.Page):
     page.title = "App PQRS"
     page.padding = 0
-    page.window_width = 1200
+    page.window_width = 1500
     page.window_height = 800
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
