@@ -44,7 +44,6 @@ def main(page: ft.Page):
         "Poppins BlackItalic": "fonts/poppins/Poppins-BlackItalic.ttf",
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
-
     Router(page)
     page.go("/login")
 
