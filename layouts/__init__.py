@@ -1,3 +1,3 @@
 from .auth_layout import AuthLayout
-__all__ = ["AuthLayout"]
-
+from .main_layout import MainLayout
+__all__ = ["AuthLayout","MainLayout"]

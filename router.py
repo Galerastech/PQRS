@@ -1,13 +1,15 @@
 import flet as ft
 
-from layouts.auth_layout import AuthLayout
+from layouts import AuthLayout, MainLayout
 from pages import LoginPage
-from pages.register_page import RegisterPage
+from pages import RegisterPage
+from pages.principal import MainPage
 from services import AuthService
 
 ROUTES = {
     "/login": lambda page: AuthLayout(LoginPage(page)),
-    "/register": lambda page: AuthLayout(RegisterPage(page))
+    "/register": lambda page: AuthLayout(RegisterPage(page)),
+    "/mainpage": lambda page: MainLayout(MainPage(page))
 }
 
 
@@ -16,7 +18,7 @@ class Router:
         self.page = page
 
     def navigate(self, route: str):
-       self.page.controls.clear()
-       view = ROUTES.get(route, lambda page: ft.Text("404 Not Found"))
-       self.page.add(view(self.page))
-       self.page.update()
+        self.page.controls.clear()
+        view = ROUTES.get(route, lambda page: ft.Text("404 Not Found"))
+        self.page.add(view(self.page))
+        self.page.update()

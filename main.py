@@ -1,3 +1,4 @@
+
 import flet as ft
 
 from router import Router
@@ -8,7 +9,7 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.window.icon = 'assets/icons/icon.png'
+    page.window_icon = 'assets/icons/icon.png'
 
     router = Router(page)
 
