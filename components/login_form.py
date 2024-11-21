@@ -1,17 +1,12 @@
 import flet as ft
-from flet_core import TextStyle
-
-from services import AuthService, auth_service
 
 
-class LoginForm(ft.UserControl):
-    def __init__(self, auth_service: AuthService):
-        super().__init__()
-        self.auth_service = auth_service
-
+class LoginForm:
+    def __init__(self, page: ft.Page):
+        self.page = page
         self.email_field = ft.TextField(
             label="Email",
-            label_style=TextStyle(color=ft.colors.BLACK),
+            label_style=ft.TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
             width=300,
             autofocus=True
@@ -19,7 +14,7 @@ class LoginForm(ft.UserControl):
 
         self.password_field = ft.TextField(
             label="Contraseña",
-            label_style=TextStyle(color=ft.colors.BLACK),
+            label_style=ft.TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
             password=True,
             can_reveal_password=True,
@@ -31,23 +26,7 @@ class LoginForm(ft.UserControl):
             size=12,
             text_align=ft.TextAlign.CENTER
         )
-
-    def handle_login(self, _):
-        success, message = self.auth_service.login(self.email_field.value, self.password_field.value)
-
-        if success:
-            self.error_text.value = message
-            self.error_text.color = ft.colors.GREEN_400
-            self.error_text.value = 'Login successful!'
-
-        else:
-            self.error_text.value = ''
-            self.error_text.color = ft.colors.RED_400
-            self.error_text.value = message
-        self.update()
-
-    def build(self):
-        return ft.Column(
+        self.form = ft.Column(
             controls=[
                 ft.Text(
                     "Iniciar Sesión",
@@ -59,13 +38,13 @@ class LoginForm(ft.UserControl):
                 self.password_field,
                 self.error_text,
                 ft.ElevatedButton(
-                    text="Iniciar Sesión",
+                    text="Iniciar sesión",
+                    bgcolor='#673ab7',
+                    style=ft.ButtonStyle(color=ft.colors.DEEP_PURPLE_500, shape=ft.RoundedRectangleBorder(radius=10)),
+                    color=ft.colors.WHITE,
                     width=300,
                     height=50,
-                    bgcolor='#673ab7',
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    on_click=self.handle_login,
-                    color=ft.colors.WHITE
+                    on_click=lambda e: print("Login")
                 ),
                 ft.Container(
                     content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
@@ -73,13 +52,11 @@ class LoginForm(ft.UserControl):
                 ),
                 ft.ElevatedButton(
                     content=ft.Row(
-                        [
-                            ft.Image(src="icons/google_icon.png", height=40, width=40),
-                            ft.Text("Iniciar sesión con Google")
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER
+                        [ft.Image(src=f"/icons/googleIcon.png", height=30, width=30),
+                         ft.Text("Iniciar sesión con Google")]
                     ),
-                    color=ft.colors.WHITE,
+                    color=ft.colors.BLACK,
+                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                     width=300,
                     height=50,
                     on_click=lambda e: print("Login con Google")
@@ -100,3 +77,6 @@ class LoginForm(ft.UserControl):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=20,
         )
+
+    def build(self):
+        return self.form

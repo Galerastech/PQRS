@@ -1,18 +1,17 @@
 import flet as ft
 
 from components import LoginForm
-from services import AuthService
 
 
-class LoginPage(ft.UserControl):
+class LoginPage:
     def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
-        self.auth_service = AuthService()
+        self.login_form = LoginForm(self.page)
 
     def build(self):
         return ft.Container(
-            content=LoginForm(auth_service=self.auth_service),
+            content=self.login_form.build(),
             expand=True,
-            padding=ft.padding.symmetric(horizontal=10, vertical=10),
+            padding=ft.padding.symmetric(horizontal=20, vertical=20),
         )
