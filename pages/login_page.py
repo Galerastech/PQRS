@@ -15,3 +15,4 @@ class LoginPage:
             expand=True,
             padding=ft.padding.symmetric(horizontal=20, vertical=20),
         )
+
