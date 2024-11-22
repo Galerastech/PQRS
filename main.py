@@ -5,6 +5,7 @@ from router import Router
 def main(page: ft.Page):
     page.title = "App PQRS"
     page.padding = 0
+    page.window_resizable = True
     page.window_width = 1500
     page.window_height = 800
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
