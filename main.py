@@ -1,7 +1,4 @@
 import flet as ft
-from rich.theme import Theme
-
-from pages import LoginPage
 from router import Router
 
 
