@@ -20,7 +20,7 @@ class UserService:
     def create_user(self, db: Session, user: UserSchema) -> User:
         hashed_pwd = self.get_password(user.password)
         new_user = User(
-            username=user.username,
+            name=user.name,
             email=user.email,
             password=hashed_pwd
         )
