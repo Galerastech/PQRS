@@ -2,14 +2,18 @@ from typing import Type
 
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
 from backend.models import User
-from backend.schemas import UserSchema
+from backend.schemas import RegisterSchema
 
 
-class UserService:
+class AuthService:
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    def check_user_existence(self, db: Session, user: RegisterSchema):
+        return db.query(User).filter(
+            (User.email == user.email) | (User.username == user.username)
+        ).first()
 
     def get_password(self, password):
         return self.pwd_context.hash(password)
@@ -17,7 +21,7 @@ class UserService:
     def verify_password(self, plain_password: str, password: str) -> bool:
         return self.pwd_context.verify(password, self.pwd_context.hash(password))
 
-    def create_user(self, db: Session, user: UserSchema) -> User:
+    def create_user(self, db: Session, user: RegisterSchema) -> User:
         hashed_pwd = self.get_password(user.password)
         new_user = User(
             name=user.name,

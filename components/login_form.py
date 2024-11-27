@@ -1,9 +1,12 @@
 import flet as ft
 
+from services import AuthService
+
 
 class LoginForm:
     def __init__(self, page: ft.Page):
         self.page = page
+        self.auth_service = AuthService()
         self.email_field = ft.TextField(
             label="Email",
             label_style=ft.TextStyle(color=ft.colors.BLACK),
@@ -44,7 +47,7 @@ class LoginForm:
                     color=ft.colors.WHITE,
                     width=300,
                     height=50,
-                    on_click=lambda e: print("Login")
+                    on_click=self.handler_login
                 ),
                 ft.Container(
                     content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
@@ -79,3 +82,7 @@ class LoginForm:
 
     def build(self):
         return self.form
+
+    def handler_login(self,_):
+        self
+
