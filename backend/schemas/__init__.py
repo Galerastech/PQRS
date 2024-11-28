@@ -1,1 +1,1 @@
-from .auth_schema import RegisterSchema
+from .user_schema import UserSchema

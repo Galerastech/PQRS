@@ -3,10 +3,11 @@ import flet as ft
 from services import AuthService
 
 
-class LoginForm:
+class SuperAdminLayout:
     def __init__(self, page: ft.Page):
         self.page = page
         self.auth_service = AuthService()
+
         self.email_field = ft.TextField(
             label="Email",
             label_style=ft.TextStyle(color=ft.colors.BLACK),
@@ -82,4 +83,3 @@ class LoginForm:
 
     def build(self):
         return self.form
-

@@ -1,8 +1,8 @@
-"""add-basic-structure
+"""añadiendo la estructura basica
 
-Revision ID: 3904caf80790
+Revision ID: 4f0a14f2c3a5
 Revises: 
-Create Date: 2024-11-26 22:23:47.580316
+Create Date: 2024-11-28 09:05:46.967917
 
 """
 from typing import Sequence, Union
@@ -11,11 +11,13 @@ from alembic import op
 import sqlalchemy as sa
 
 
+
 # revision identifiers, used by Alembic.
-revision: str = '3904caf80790'
+revision: str = '4f0a14f2c3a5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
 
 
 def upgrade() -> None:
@@ -73,10 +75,11 @@ def upgrade() -> None:
     sa.Column('password', sa.String(length=200), nullable=False),
     sa.Column('apartment', sa.Integer(), nullable=False),
     sa.Column('phone', sa.String(length=100), nullable=True),
+    sa.Column('is_superadmin', sa.Boolean(), nullable=False),
     sa.Column('status', sa.String(length=20), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('tenant_id', sa.Integer(), nullable=False),
+    sa.Column('tenant_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['tenant_id'], ['tenants.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')

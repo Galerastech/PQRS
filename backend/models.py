@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey,Text
+
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey,Text,Boolean
 from sqlalchemy.orm import relationship
 from backend.database import Base
 
@@ -23,10 +24,11 @@ class User(Base):
     password = Column(String(200), nullable=False)
     apartment = Column(Integer, nullable=False)
     phone = Column(String(100), nullable=True)
+    is_superadmin = Column(Boolean,nullable=False, default=False, unique=True)
     status = Column(String(20), nullable=False, default='activo')
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-    tenant_id = Column(Integer, ForeignKey('tenants.id', ondelete='CASCADE'), nullable=False)
+    tenant_id = Column(Integer, ForeignKey('tenants.id', ondelete='CASCADE'), nullable=True)
 
     tenant = relationship('Tenant', backref='users')
 

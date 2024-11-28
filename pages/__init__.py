@@ -1,4 +1,4 @@
 from .login_page import LoginPage
 from .register_page import RegisterPage
-__all__ = ["LoginPage","RegisterPage"]
+from .super_admin_page import SuperAdminPage
 

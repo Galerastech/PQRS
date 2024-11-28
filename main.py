@@ -1,4 +1,5 @@
 import flet as ft
+
 from router import Router
 
 
@@ -43,9 +44,7 @@ def main(page: ft.Page):
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
 
-
     Router(page)
-    page.go("/login")
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")
