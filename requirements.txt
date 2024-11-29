@@ -1,4 +1,5 @@
 flet==0.22.*
+pyjwt
 fastapi
 uvicorn
 sqlalchemy

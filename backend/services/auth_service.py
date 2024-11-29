@@ -4,6 +4,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from backend.models import User
 from backend.schemas import UserSchema
+import jwt
 from config import settings
 
 
@@ -37,12 +38,12 @@ class AuthService:
         db.refresh(new_user)
         return new_user
 
-    def authenticate_user(self, db: Session, email: str, password: str) -> Type[User] | None:
+    def authenticate_user(self, db: Session, email: str, password: str) -> Optional[UserSchema] | None:
         user = db.query(User).filter(User.email == email).first()
-        if not user or not self.verify_password(password, user.password):
-            return None
-        if not self.verify_password(password, user.password):
-            return None
+        # if not user or not self.verify_password(password, user.password):
+        #     return None
+        # if not self.verify_password(password, user.password):
+        #     return None
         return user
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -52,4 +53,9 @@ class AuthService:
         else:
             expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
-        encoded_jwt =.encode(to_encode, settings.SECRET_KEY)
+
+        encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY)
+        return encoded_jwt
+
+
+

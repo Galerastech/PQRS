@@ -45,6 +45,7 @@ class AuthService:
     def is_authenticated(self) -> bool:
         return self.current_user is not None
 
+    # TODO: Intercambiar interaccion de funciones entre primero validar y luego registrar
     def validate_register_user(self, **kwargs, ) -> Tuple[bool, str]:
         email = kwargs.get("email")
         username = kwargs.get("username")

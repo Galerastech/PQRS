@@ -24,7 +24,7 @@ class User(Base):
     password = Column(String(200), nullable=False)
     apartment = Column(Integer, nullable=False)
     phone = Column(String(100), nullable=True)
-    is_superadmin = Column(Boolean,nullable=False, default=False, unique=True)
+    is_superadmin = Column(Boolean,nullable=False, default=False)
     status = Column(String(20), nullable=False, default='activo')
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
