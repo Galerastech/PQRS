@@ -22,7 +22,7 @@ class User(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(200), nullable=False)
-    apartment = Column(Integer, nullable=False)
+    apartment = Column(Integer, nullable=False, default=0)
     phone = Column(String(100), nullable=True)
     is_superadmin = Column(Boolean,nullable=False, default=False)
     status = Column(String(20), nullable=False, default='activo')
