@@ -38,12 +38,12 @@ class AuthService:
         db.refresh(new_user)
         return new_user
 
-    def authenticate_user(self, db: Session, email: str, password: str) -> Optional[UserSchema] | None:
+    def authenticate_user(self, db: Session, email: str, password: str) -> Optional[UserSchema]:
         user = db.query(User).filter(User.email == email).first()
-        # if not user or not self.verify_password(password, user.password):
-        #     return None
-        # if not self.verify_password(password, user.password):
-        #     return None
+        if not user or not self.verify_password(password, user.password):
+            return None
+        if not self.verify_password(password, user.password):
+            return None
         return user
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:

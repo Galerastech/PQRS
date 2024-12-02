@@ -12,7 +12,7 @@ router = APIRouter(prefix="/auth")
 
 auth_service = AuthService()
 
-
+# TODO: verificar los schemas y validar casos
 @router.post("/signup", response_model=UserSchema)
 async def signup(data: UserSchema, db: Session = Depends(get_db)):
     try:
@@ -29,8 +29,8 @@ async def signup(data: UserSchema, db: Session = Depends(get_db)):
             detail=str(e)
         )
 
-
-@router.post("/signin", response_model=UserLoginSchema)
+#  TODO: Verificar que lo que realmente necesito se muestre en el dahsboard tanto del super admin comoo del admin
+@router.post("/signin", response_model=TokenSchema)
 async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
     try:
         user = auth_service.authenticate_user(
@@ -43,11 +43,18 @@ async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
                 detail="Incorrect username or password",
                 headers={"WWW-Authenticate": "Bearer"}
             )
+
         access_token = auth_service.create_access_token(
             data={"sub": user.id},
-            expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
         )
-        return TokenSchema(access_token=access_token, token_type="bearer", user=user)
+        return TokenSchema(access_token=access_token, token_type="bearer", user=UserSchema(tenant_id=user.tenant_id,
+                                                                                           name=user.name,
+                                                                                           email=user.email,
+                                                                                           phone=user.phone,
+                                                                                           apartment=user.apartment,
+                                                                                           password=user.password,
+                                                                                           ))
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
