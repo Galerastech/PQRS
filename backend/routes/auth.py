@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.params import Depends
 from backend.database import get_db
 from backend.schemas import UserSchema, UserLoginSchema, TokenSchema
+from backend.schemas.user_schema import UserRegister
 from backend.services import AuthService
 from config import settings
 
@@ -12,9 +13,10 @@ router = APIRouter(prefix="/auth")
 
 auth_service = AuthService()
 
+
 # TODO: verificar los schemas y validar casos
 @router.post("/signup", response_model=UserSchema)
-async def signup(data: UserSchema, db: Session = Depends(get_db)):
+async def signup(data: UserRegister, db: Session = Depends(get_db)):
     try:
         existing_user = auth_service.check_user_existence(db, data)
         if existing_user:
@@ -28,6 +30,7 @@ async def signup(data: UserSchema, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
+
 
 #  TODO: Verificar que lo que realmente necesito se muestre en el dahsboard tanto del super admin comoo del admin
 @router.post("/signin", response_model=TokenSchema)
@@ -48,13 +51,15 @@ async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
             data={"sub": user.id},
             expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
         )
-        return TokenSchema(access_token=access_token, token_type="bearer", user=UserSchema(tenant_id=user.tenant_id,
-                                                                                           name=user.name,
-                                                                                           email=user.email,
-                                                                                           phone=user.phone,
-                                                                                           apartment=user.apartment,
-                                                                                           password=user.password,
-                                                                                           ))
+        return TokenSchema(access_token=access_token, token_type="bearer",
+                           expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+                           user=UserSchema(tenant_id=user.tenant_id,
+                                           name=user.name,
+                                           email=user.email,
+                                           phone=user.phone,
+                                           apartment=user.apartment,
+                                           is_superadmin=user.is_superadmin
+                                           ))
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

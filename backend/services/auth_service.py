@@ -1,10 +1,13 @@
 from datetime import timedelta, datetime
-from typing import Type, Optional
+from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from backend.models import User
+from pydantic import EmailStr
 from backend.schemas import UserSchema
 import jwt
+
+from backend.schemas.user_schema import UserRegister
 from config import settings
 
 
@@ -12,7 +15,7 @@ class AuthService:
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    def check_user_existence(self, db: Session, user: UserSchema):
+    def check_user_existence(self, db: Session, user: User):
         return db.query(User).filter(
             User.email == user.email
         ).first()
@@ -36,9 +39,9 @@ class AuthService:
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        return new_user
+        return UserSchema.model_validate(new_user)
 
-    def authenticate_user(self, db: Session, email: str, password: str) -> Optional[UserSchema]:
+    def authenticate_user(self, db: Session, email: EmailStr, password: str) -> Optional[UserSchema]:
         user = db.query(User).filter(User.email == email).first()
         if not user or not self.verify_password(password, user.password):
             return None
@@ -56,6 +59,3 @@ class AuthService:
 
         encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY)
         return encoded_jwt
-
-
-
