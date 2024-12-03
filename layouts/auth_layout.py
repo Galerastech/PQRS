@@ -8,6 +8,7 @@ class AuthLayout:
         self.image = ft.Image(
             src="images/loginImage.jpg",
             fit=ft.ImageFit.COVER,
+            expand=2,
             width=860,
             height=540,
             border_radius=ft.border_radius.only(top_left=12, bottom_left=12),

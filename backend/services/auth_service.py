@@ -43,11 +43,9 @@ class AuthService:
 
     def authenticate_user(self, db: Session, email: EmailStr, password: str) -> Optional[UserSchema]:
         user = db.query(User).filter(User.email == email).first()
-        if not user or not self.verify_password(password, user.password):
-            return None
-        if not self.verify_password(password, user.password):
-            return None
-        return user
+        if user and self.verify_password(password, user.password):
+            return user
+        return None
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
         to_encode = data.copy()

@@ -11,3 +11,5 @@ app = FastAPI(
 )
 
 app.include_router(auth.router, tags=["Auth"])
+
+# app.include_router(tenant.router, tags=["Auth"])

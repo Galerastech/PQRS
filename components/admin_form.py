@@ -8,6 +8,8 @@ class AdminForm:
         self.page = page
         self.auth_service = AuthService()
         self.tenant = ft.Dropdown(
+            border_color=ft.colors.DEEP_PURPLE_500,
+            label='Edificio',
             width=300,
             options=[
                 ft.dropdown.Option("Red"),
@@ -45,7 +47,6 @@ class AdminForm:
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
-                self.tenant,
                 self.email_field,
                 self.password_field,
                 self.error_text,

@@ -73,3 +73,13 @@ class AuthService:
                 return False, response.json().get("detail")
         except requests.exceptions.RequestException as e:
             return False, str(e)
+
+    def get_tenants(self, _):
+        try:
+            response = requests.get("http://localhost:8001/tenants/")
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            return []
+        except requests.exceptions.RequestException as e:
+            return []

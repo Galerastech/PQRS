@@ -12,7 +12,7 @@ class LoginPage:
     def build(self):
         return ft.Container(
             content=self.login_form.build(),
-            expand=True,
+            expand=1,
             padding=ft.padding.symmetric(horizontal=20, vertical=20),
         )
 

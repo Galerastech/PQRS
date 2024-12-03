@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr, constr
 
 
@@ -17,12 +19,20 @@ class UserLoginSchema(BaseModel):
 
 
 class UserSchema(BaseModel):
-    tenant_id: int
+    tenant_id: Optional[int]
     name: str
     email: EmailStr
-    phone: str
+    phone: Optional[str]
     apartment: int
     is_superadmin: bool
+
+    class Config:
+        from_attributes = True
+        orm_mode = True
+
+class AdminSchemaRequest(BaseModel):
+    email: EmailStr
+    password: str
 
     class Config:
         from_attributes = True
