@@ -1,42 +1,67 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import requests
 
 
 @dataclass
 class User:
+    tenant_id: Optional[int]
+    name: str
     email: str
-    username: str
+    phone: Optional[str]
+    apartment: int
+    role: str
+
+
+@dataclass
+class TokenSchema:
+    access_token: str
+    token_type: str
+    expires_in: int
+    user: User
 
 
 class AuthService:
     def __init__(self):
-        self.current_user: Optional[User] = None
-        # Usuario de prueba
-        self._users = {
-            "test@test.com": {
-                "password": "123456",
-                "username": "test_user"
-            }
-        }
+        self.current_user = None
+        self.token = None
 
-    def login(self, email: str, password: str) -> tuple[bool, str]:
-        if not email or not password:
-            return False, "Todos los campos son requeridos"
-
-        user_data = self._users.get(email)
-        if not user_data:
-            return False, "Usuario no encontrado"
-
-        if user_data["password"] != password:
-            return False, "Contraseña incorrecta"
-
-        self.current_user = User(
-            email=email,
-            username=user_data["username"]
-        )
-        return True, "Login exitoso"
+    def login(self, email: str, password: str):
+        print(email, password)
+        # try:
+        #     response = requests.post("http://localhost:8001/auth/signup", json={
+        #         "email": email,
+        #         "password": password,
+        #     })
+        #     response.raise_for_status()
+        #     data = response.json()
+        #     print(data)
+        #     if "access_token" not in data or "user" not in data:
+        #         return False, 'Datos de la respuesta son invalidos'
+        #
+        #     self.token = TokenSchema(
+        #         access_token=data["access_token"],
+        #         token_type="Bearer",
+        #         expires_in=data["expires_in"],
+        #         user=User(
+        #             tenant_id=data["user"]["tenant_id"],
+        #             name=data["user"]["name"],
+        #             email=data["user"]["email"],
+        #             phone=data["user"]["phone"],
+        #             apartment=data["user"]["apartment"],
+        #             role=data["user"]["role"],
+        #         )
+        #     )
+        #     self.current_user = self.token.user
+        #
+        #     return True, self.token
+        # except requests.exceptions.RequestException as e:
+        #     return False, str(e)
+        # except ValueError as e:
+        #     return False, f"Error al procesor los datos de la respuesta: {str(e)}"
+        # except KeyError as e:
+        #     return False, f"Error faltan datos en la respuesta: {str(e)}"
 
     def logout(self):
         self.current_user = None

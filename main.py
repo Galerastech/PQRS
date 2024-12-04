@@ -1,6 +1,7 @@
 import flet as ft
 
 from router import Router
+from services import AuthService
 
 
 def main(page: ft.Page):
@@ -44,7 +45,8 @@ def main(page: ft.Page):
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
 
-    Router(page)
+    Router(page, auth_service=AuthService())
+
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")

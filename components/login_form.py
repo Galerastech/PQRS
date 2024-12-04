@@ -12,11 +12,13 @@ class LoginForm:
             label_style=ft.TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
             width=300,
+            content_padding=10,
             autofocus=True
         )
 
         self.password_field = ft.TextField(
             label="Contraseña",
+            content_padding=10,
             label_style=ft.TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
             password=True,
@@ -29,6 +31,30 @@ class LoginForm:
             size=12,
             text_align=ft.TextAlign.CENTER
         )
+
+        self.tenant = ft.Dropdown(
+            label="Rol",
+            options=[
+                ft.dropdown.Option(
+                    'SuperAdministrador',
+                    alignment=ft.alignment.center,
+                ),
+                ft.dropdown.Option(
+                    'Administrador',
+                    alignment=ft.alignment.center,
+                ),
+                ft.dropdown.Option(
+                    'Residente',
+                    alignment=ft.alignment.center,
+                ),
+            ],
+            label_style=ft.TextStyle(color=ft.colors.BLACK),
+            border_color=ft.colors.DEEP_PURPLE_500,
+            width=300,
+            autofocus=True,
+            content_padding=10,
+        )
+
         self.form = ft.Column(
             controls=[
                 ft.AlertDialog(content=self.error_text),
@@ -38,6 +64,7 @@ class LoginForm:
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
+                self.tenant,
                 self.email_field,
                 self.password_field,
                 self.error_text,
@@ -47,7 +74,7 @@ class LoginForm:
                     style=ft.ButtonStyle(color=ft.colors.DEEP_PURPLE_500, shape=ft.RoundedRectangleBorder(radius=10)),
                     color=ft.colors.WHITE,
                     width=300,
-                    height=50,
+                    height=40,
                     on_click=''
                 ),
                 ft.Container(
@@ -62,7 +89,7 @@ class LoginForm:
                     color=ft.colors.BLACK,
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                     width=300,
-                    height=50,
+                    height=40,
                     on_click=lambda e: print("Login con Google")
                 ),
                 ft.Text(
@@ -83,4 +110,3 @@ class LoginForm:
 
     def build(self):
         return self.form
-
