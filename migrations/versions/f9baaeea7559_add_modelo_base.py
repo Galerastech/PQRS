@@ -1,8 +1,8 @@
-"""añadiendo la estructura basica
+"""add modelo base
 
-Revision ID: 4f0a14f2c3a5
+Revision ID: f9baaeea7559
 Revises: 
-Create Date: 2024-11-28 09:05:46.967917
+Create Date: 2024-12-04 08:04:15.676791
 
 """
 from typing import Sequence, Union
@@ -11,13 +11,11 @@ from alembic import op
 import sqlalchemy as sa
 
 
-
 # revision identifiers, used by Alembic.
-revision: str = '4f0a14f2c3a5'
+revision: str = 'f9baaeea7559'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
-
 
 
 def upgrade() -> None:
@@ -75,7 +73,7 @@ def upgrade() -> None:
     sa.Column('password', sa.String(length=200), nullable=False),
     sa.Column('apartment', sa.Integer(), nullable=False),
     sa.Column('phone', sa.String(length=100), nullable=True),
-    sa.Column('is_superadmin', sa.Boolean(), nullable=False),
+    sa.Column('role', sa.Enum('resident', 'admin', 'superadmin', name='userrole'), nullable=True),
     sa.Column('status', sa.String(length=20), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),

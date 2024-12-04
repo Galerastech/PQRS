@@ -1,5 +1,6 @@
+import enum
 
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey,Text,Boolean
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, Text, Enum
 from sqlalchemy.orm import relationship
 from backend.database import Base
 
@@ -16,6 +17,12 @@ class Tenant(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
 
+class UserRole(str,enum.Enum):
+    resident = 'residente'
+    admin = 'administrator'
+    superadmin = 'superadministrator'
+
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -24,7 +31,7 @@ class User(Base):
     password = Column(String(200), nullable=False)
     apartment = Column(Integer, nullable=False, default=0)
     phone = Column(String(100), nullable=True)
-    is_superadmin = Column(Boolean,nullable=False, default=False)
+    role = Column(Enum(UserRole), nullable=True, default=UserRole.resident)
     status = Column(String(20), nullable=False, default='activo')
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
@@ -63,6 +70,7 @@ class Pqrs(Base):
     user = relationship('User', backref='pqrs')
     tenant = relationship('Tenant', backref='pqrs')
 
+
 class PqrsResponse(Base):
     __tablename__ = 'pqrs_response'
     id = Column(Integer, primary_key=True)
@@ -89,6 +97,7 @@ class Auditories(Base):
     tenant_id = Column(Integer, ForeignKey('tenants.id', ondelete='CASCADE'), nullable=False)
 
     tenant = relationship('Tenant', backref='auditories')
+
 
 class Parameters(Base):
     __tablename__ = 'parametres'

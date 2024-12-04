@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
 from backend.database import get_db
+from backend.models import UserRole
 from backend.schemas import UserSchema, UserLoginSchema, TokenSchema
 from backend.schemas.user_schema import UserRegister, AdminSchemaRequest
 from backend.services import AuthService
@@ -48,18 +49,12 @@ async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
             )
 
         access_token = auth_service.create_access_token(
-            data={"sub": user.id},
+            data={"sub": user.id, 'role': user.role},
             expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
         )
         return TokenSchema(access_token=access_token, token_type="bearer",
                            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-                           user=UserSchema(tenant_id=user.tenant_id,
-                                           name=user.name,
-                                           email=user.email,
-                                           phone=user.phone,
-                                           apartment=user.apartment,
-                                           is_superadmin=user.is_superadmin
-                                           ))
+                           user=UserSchema.model_validate(user))
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -82,18 +77,12 @@ def superpersperadmin(data: AdminSchemaRequest, db: Session = Depends(get_db)):
             )
 
         access_token = auth_service.create_access_token(
-            data={"sub": user.id},
+            data={"sub": user.id, 'role': user.role},
             expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
         )
         return TokenSchema(access_token=access_token, token_type="bearer",
                            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-                           user=UserSchema(tenant_id=user.tenant_id,
-                                           name=user.name,
-                                           email=user.email,
-                                           phone=user.phone,
-                                           apartment=user.apartment,
-                                           is_superadmin=user.is_superadmin
-                                           ))
+                           user=UserSchema.model_validate(user))
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

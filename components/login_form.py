@@ -31,6 +31,7 @@ class LoginForm:
         )
         self.form = ft.Column(
             controls=[
+                ft.AlertDialog(content=self.error_text),
                 ft.Text(
                     "Iniciar Sesión",
                     size=32,

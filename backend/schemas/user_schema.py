@@ -24,7 +24,7 @@ class UserSchema(BaseModel):
     email: EmailStr
     phone: Optional[str]
     apartment: int
-    is_superadmin: bool
+    role: str
 
     class Config:
         from_attributes = True
