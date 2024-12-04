@@ -1,18 +1,17 @@
 import flet as ft
 
-from components import LoginForm
+from components import AdminForm
 
 
-class LoginPage:
+class SuperAdminPage:
     def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
-        self.login_form = LoginForm(self.page)
+        self.login_form = AdminForm(self.page)
 
     def build(self):
         return ft.Container(
             content=self.login_form.build(),
-            expand=1,
+            expand=True,
             padding=ft.padding.symmetric(horizontal=20, vertical=20),
         )
-
