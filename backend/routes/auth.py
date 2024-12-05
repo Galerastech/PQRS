@@ -1,10 +1,8 @@
 from datetime import timedelta
-
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
 from backend.database import get_db
-from backend.models import UserRole
 from backend.schemas import UserSchema, UserLoginSchema, TokenSchema
 from backend.schemas.user_schema import UserRegister, AdminSchemaRequest
 from backend.services import AuthService
@@ -63,7 +61,7 @@ async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
 
 
 @router.post("/superuser", response_model=TokenSchema)
-def superpersperadmin(data: AdminSchemaRequest, db: Session = Depends(get_db)):
+def superuser(data: AdminSchemaRequest, db: Session = Depends(get_db)):
     try:
         user = auth_service.authenticate_user(
             db, data.email,

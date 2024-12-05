@@ -1,4 +1,8 @@
+import asyncio
+
 import flet as ft
+import httpx
+import requests
 
 from services import AuthService
 
@@ -7,6 +11,8 @@ class LoginForm:
     def __init__(self, page: ft.Page):
         self.page = page
         self.auth_service = AuthService()
+        self.tenant_container = ft.Column(visible=False)
+
         self.email_field = ft.TextField(
             label="Email",
             label_style=ft.TextStyle(color=ft.colors.BLACK),
@@ -32,7 +38,7 @@ class LoginForm:
             text_align=ft.TextAlign.CENTER
         )
 
-        self.tenant = ft.Dropdown(
+        self.rol = ft.Dropdown(
             label="Rol",
             options=[
                 ft.dropdown.Option(
@@ -53,6 +59,7 @@ class LoginForm:
             width=300,
             autofocus=True,
             content_padding=10,
+            on_change=self.handle_role_change
         )
 
         self.form = ft.Column(
@@ -64,7 +71,8 @@ class LoginForm:
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
-                self.tenant,
+                self.rol,
+                self.tenant_container,
                 self.email_field,
                 self.password_field,
                 self.error_text,
@@ -110,3 +118,45 @@ class LoginForm:
 
     def build(self):
         return self.form
+
+    def handle_role_change(self, e):
+        if e.control.value != "SuperAdministrador":
+            asyncio.run(self.load_tenants())
+        else:
+            self.tenant_container.controls.clear()
+            self.tenant_container.visible = False
+        self.page.update()
+
+    async def fetch_tenants(self):
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get("http://localhost:8002/tenants")
+                response.raise_for_status()
+                tenants = response.json()
+                return tenants
+        except Exception as e:
+            print(e)
+            return []
+
+    async def load_tenants(self):
+        tenants = await self.fetch_tenants()
+        self.update_tenant_dropdown(tenants)
+
+    def update_tenant_dropdown(self, tenants):
+        if tenants:
+
+            tenant_dropdown = ft.Dropdown(
+                dense=True,
+                label="Seleccione el Edificio",
+                options=[ft.dropdown.Option(f"{tenant["name"]}", data=tenant["id"]) for tenant in tenants],
+                width=300,
+                content_padding=10,
+                height=40,
+            )
+            self.tenant_container.controls = [tenant_dropdown]
+            self.tenant_container.visible = True
+
+        else:
+            self.tenant_container.controls.clear()
+            self.tenant_container.visible = False
+        self.page.update()
