@@ -1,9 +1,17 @@
 # PQRS
 
 <div style="vertical-align: middle">
+<<<<<<< HEAD
   <img src="https://github.com/Galerastech/PQRS/blob/develop/assets/icons/icon_web.jpeg?raw=true" alt="Logo del proyecto" style="width:200px;">
 </div>
 
+=======
+  <img src="https://github.com/Galerastech/PQRS/blob/main/assets/icons/loading-animation.png?raw=true" alt="Logo del proyecto" style="width:200px;">
+</div>
+
+
+
+>>>>>>> 0252e506d6ec24079476acff5548e35d0bbd0fab
 ## Inicialización del Proyecto
 
 1. Clonar el repositorio usando:

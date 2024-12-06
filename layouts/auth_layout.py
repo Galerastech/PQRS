@@ -20,7 +20,6 @@ class AuthLayout(ft.UserControl):
                                 height=600,
                                 border_radius=ft.border_radius.only(top_left=12, bottom_left=12),
                             ),
-
                             self.content
                         ]
                     ),
