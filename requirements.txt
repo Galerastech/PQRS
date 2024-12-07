@@ -1,5 +1,5 @@
 flet==0.22.*
-jwt
+pyjwt
 fastapi
 uvicorn
 sqlalchemy
@@ -8,3 +8,5 @@ python-dotenv
 alembic
 passlib
 bcrypt
+python-multipart
+pydantic[email]
