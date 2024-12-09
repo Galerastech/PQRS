@@ -4,7 +4,6 @@ from fastapi import APIRouter
 from backend.database import get_db
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-
 from backend.models import Tenant
 from backend.schemas import TenantLoginSchema
 from backend.services import TenantService

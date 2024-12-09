@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Union
 
 import requests
 
@@ -28,12 +28,12 @@ class AuthService:
         self.current_user = None
         self.token = None
 
-    def login(self, email: str, password: str):
-        print(email, password)
+    def login(self, email: str, password: str, rol: str):
         try:
             response = requests.post("http://localhost:8001/auth/signup", json={
                 "email": email,
                 "password": password,
+                "rol": rol
             })
             response.raise_for_status()
             data = response.json()
@@ -72,7 +72,8 @@ class AuthService:
         return self.current_user is not None
 
     # TODO: Intercambiar interaccion de funciones entre primero validar y luego registrar
-    def validate_register_user(self, **kwargs,) -> Tuple[bool, str]:
+    
+    def validate_register_user(self, **kwargs) -> Tuple[bool, str]:
         email = kwargs.get("email")
         username = kwargs.get("username")
         password = kwargs.get("password")
@@ -109,3 +110,34 @@ class AuthService:
             return []
         except requests.exceptions.RequestException as e:
             return []
+
+    def validate_login_user(self, **kwargs) -> Tuple[bool, Any]:
+        email = kwargs.get("email")
+        password = kwargs.get("password")
+        rol = kwargs.get("rol")
+        
+        print(email, password, rol)
+        
+        
+        if rol == "superadministrator" or rol == "administrator":
+            success, message = self.login_superadministrator(email=email, password=password)
+            return success, message
+
+        if not email or not password or not rol:
+            return False, "Todos los campos son requeridos"
+
+        success, message = self.login(email=email, password=password, rol=rol)
+        return success, message
+    
+    def login_superadministrator(self, email: str | None, password: str | None):
+        try:
+            response = requests.post("http://localhost:8001/auth/superuser", json={
+                "email": email,
+                "password": password
+            })
+            if response.status_code == 200:
+                return True, "Superadministrador logueado correctamente"
+            else:
+                return False, response.json().get("detail")
+        except requests.exceptions.RequestException as e:
+            return False, str(e)

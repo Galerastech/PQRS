@@ -44,11 +44,11 @@ class LoginForm:
             label="Rol",
             options=[
                 ft.dropdown.Option(
-                    'SuperAdministrador',
+                    'superadministrator',
                     alignment=ft.alignment.center,
                 ),
                 ft.dropdown.Option(
-                    'Administrador',
+                    'administrator',
                     alignment=ft.alignment.center,
                 ),
                 ft.dropdown.Option(
@@ -85,7 +85,7 @@ class LoginForm:
                     color=ft.colors.WHITE,
                     width=300,
                     height=40,
-                    on_click=''
+                    on_click=self.handle_login
                 ),
                 ft.Container(
                     content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
@@ -118,11 +118,26 @@ class LoginForm:
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
+    def handle_login(self, e):
+        user_data = {
+            "email": self.email_field.value.strip(),
+            "password": self.password_field.value,
+            "rol": self.rol.value,
+        }
+        success, message = self.auth_service.validate_login_user(**user_data)
+        if success:
+            self.page.go("/home")
+        else:
+            self.error_text.value = message
+            self.page.update()
+            self.error_text.update()
+            
+            
     def build(self):
         return self.form
 
     def handle_role_change(self, e):
-        if e.control.value != "SuperAdministrador":
+        if e.control.value != "superadministrator":
             asyncio.run(self.load_tenants())
         else:
             self.tenant_container.controls.clear()
