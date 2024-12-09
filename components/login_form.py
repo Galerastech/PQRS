@@ -8,6 +8,7 @@ from services import AuthService
 
 
 class LoginForm:
+
     def __init__(self, page: ft.Page):
         self.page = page
         self.auth_service = AuthService()
@@ -39,6 +40,7 @@ class LoginForm:
         )
 
         self.rol = ft.Dropdown(
+            dense=True,
             label="Rol",
             options=[
                 ft.dropdown.Option(
@@ -130,7 +132,7 @@ class LoginForm:
     async def fetch_tenants(self):
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get("http://localhost:8002/tenants")
+                response = await client.get("http://localhost:8001/tenants")
                 response.raise_for_status()
                 tenants = response.json()
                 return tenants
@@ -148,7 +150,8 @@ class LoginForm:
             tenant_dropdown = ft.Dropdown(
                 dense=True,
                 label="Seleccione el Edificio",
-                options=[ft.dropdown.Option(f"{tenant["name"]}", data=tenant["id"]) for tenant in tenants],
+                options=[ft.dropdown.Option(text=tenant.get("name"), data=tenant.get("id")) 
+                         for tenant in tenants],
                 width=300,
                 content_padding=10,
                 height=40,
