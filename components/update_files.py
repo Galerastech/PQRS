@@ -31,7 +31,7 @@ def update_files_function(nombre_boton: str):
 
         def pick_files_result(self, e: ft.FilePickerResultEvent):
             self.selected_files.value = (
-                ", ".join(map(lambda f: f.name, e.files)) if e.files else "Cancelled!"
+                ", ".join(map(lambda f: f.name, e.files)) if e.files else "Cancelado!"
             )
             self.selected_files.update()
 
