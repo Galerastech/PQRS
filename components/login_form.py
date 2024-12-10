@@ -1,4 +1,5 @@
 import asyncio
+from os import access
 
 import flet as ft
 import httpx
@@ -138,15 +139,25 @@ class LoginForm:
         }
         success, message = self.auth_service.validate_login_user(**user_data)
         if success:
-            self.alert.title = ft.Text("Inicio de sesion exitoso")
-            self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
-            self.alert.open = True
-            self.page.update()
-        else:
-            self.alert.title = ft.Text("Error")
-            self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
-            self.alert.open = True
-            self.page.update()
+            self.access_token = message.get("access_token")
+            self.current_user = message.get("user")
+            
+            verified_token = self.auth_service.verify_token(self.access_token)
+            print(verified_token)
+            
+            
+        # if success:
+        #     self.alert.title = ft.Text("Inicio de sesion exitoso")
+        #     self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
+        #     self.alert.on_dismiss = self.close_alert
+        #     self.alert.open = True
+        #     self.page.update()
+        # else:
+        #     self.alert.title = ft.Text("Error")
+        #     self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
+        #     self.alert.on_dismiss = self.close_alert
+        #     self.alert.open = True
+        #     self.page.update()
 
     def build(self):
         return self.form
@@ -162,7 +173,7 @@ class LoginForm:
     async def fetch_tenants(self):
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get("http://localhost:8001/tenants")
+                response = await client.get("http://localhost:8002/tenants")
                 response.raise_for_status()
                 tenants = response.json()
                 return tenants

@@ -1,5 +1,10 @@
 from dataclasses import dataclass
+import datetime
+import os
 from typing import Any, Optional, Tuple, Union, Dict
+from passlib.context import CryptContext
+from config import settings
+import jwt
 import requests
 
 
@@ -11,7 +16,11 @@ class User:
     phone: Optional[str]
     apartment: Optional[int]
     role: str
-
+@dataclass
+class TokenResponse:
+    sub: int
+    role: str
+    exp: int
 
 @dataclass
 class TokenSchema:
@@ -19,17 +28,21 @@ class TokenSchema:
     token_type: str
     expires_in: int
     user: User
+    
+
 
 
 class AuthService:
-    BASE_URL = "http://localhost:8001/auth"
+    BASE_URL = "http://localhost:8002/auth"
+    bycrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     def __init__(self):
-        self.current_user: Optional[User] = None
+        self.SECRET_KEY = settings.SECRET_KEY
+        self.ALGORITHM = settings.ALGORITHM
+        self.current_user: Optional[TokenResponse] = None
         self.token: Optional[TokenSchema] = None
 
     def _make_request(self, method: str, endpoint: str, **kwargs) -> Tuple[bool, Any]:
-        """Helper to handle HTTP requests."""
         url = f"{self.BASE_URL}{endpoint}"
         try:
             response = requests.request(method, url, **kwargs)
@@ -44,6 +57,9 @@ class AuthService:
 
         if not success:
             return False, data
+
+        if not data.get("access_token", ""):
+            return False, "Error al iniciar sesion, verifica tus credenciales"
 
         try:
             user_data = data.get("user", {})
@@ -104,3 +120,8 @@ class AuthService:
             return self.login_superadministrator(email=email, password=password)
 
         return self.login(email=email, password=password, role=role )
+
+    def verify_token(self, token: str):
+        print(token)
+        
+        

@@ -9,3 +9,10 @@ def get_routes(page):
         "/login": {"layout": auth_layout, "page": lambda: LoginPage(page).build()},
         "/register": {"layout": auth_layout, "page": lambda: RegisterPage(page).build()},
     }
+
+def get_protected_routes():
+    return{
+        "/super-admin-dashboard":'superadministrator',
+        "/admin-dashboard":'administrator',
+        "/resident-dashboard":'resident'
+        }

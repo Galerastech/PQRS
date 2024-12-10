@@ -1,5 +1,7 @@
+from ast import In
 from datetime import timedelta
 from fastapi import APIRouter, HTTPException, status
+import jwt
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
 from backend.database import get_db
@@ -69,18 +71,15 @@ def superuser(data: AdminSchemaRequest, db: Session = Depends(get_db)):
 
         if not user:
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incorrect email or password",
                 headers={"WWW-Authenticate": "Bearer"}
             )
-
         access_token = auth_service.create_access_token(
-            data={"sub": user.id, 'role': user.role},
-            expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+            data={"sub": user.id, 'role': user.role}
         )
-        return TokenSchema(access_token=access_token, token_type="bearer",
-                           expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-                           user=UserSchema.model_validate(user))
+        return { "access_token": access_token, "token_type": "bearer",
+                           "expires_in": int(timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES)).total_seconds())}
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
