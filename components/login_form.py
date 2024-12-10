@@ -13,6 +13,13 @@ class LoginForm:
         self.page = page
         self.auth_service = AuthService()
         self.tenant_container = ft.Column(visible=False)
+        self.alert = ft.AlertDialog(
+            open=False,
+            modal=True,
+            actions=[ft.TextButton("Cerrar", on_click=self.close_alert)],
+            actions_alignment=ft.MainAxisAlignment.END,
+            alignment=ft.alignment.center
+        )
 
         self.email_field = ft.TextField(
             label="Email",
@@ -66,7 +73,7 @@ class LoginForm:
 
         self.form = ft.Column(
             controls=[
-                ft.AlertDialog(content=self.error_text),
+                self.alert,
                 ft.Text(
                     "Iniciar Sesión",
                     size=32,
@@ -117,22 +124,30 @@ class LoginForm:
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
+        
+    def close_alert(self, e):
+        self.alert.open = False
+        self.page.update()
 
     def handle_login(self, e):
+
         user_data = {
             "email": self.email_field.value.strip(),
             "password": self.password_field.value,
-            "rol": self.rol.value,
+            "role": self.rol.value,
         }
         success, message = self.auth_service.validate_login_user(**user_data)
         if success:
-            self.page.go("/home")
-        else:
-            self.error_text.value = message
+            self.alert.title = ft.Text("Inicio de sesion exitoso")
+            self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
+            self.alert.open = True
             self.page.update()
-            self.error_text.update()
-            
-            
+        else:
+            self.alert.title = ft.Text("Error")
+            self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
+            self.alert.open = True
+            self.page.update()
+
     def build(self):
         return self.form
 

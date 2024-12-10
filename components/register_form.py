@@ -12,6 +12,7 @@ class RegisterForm:
         self.username_field = ft.TextField(
             label="Usuario",
             width=300,
+            content_padding=10,
             border_color=ft.colors.DEEP_PURPLE_500
         )
         self.password_field = ft.TextField(
@@ -20,11 +21,13 @@ class RegisterForm:
             label_style=TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
             password=True,
+            content_padding=10,
             can_reveal_password=True
         )
         self.confirm_password_field = ft.TextField(
             label="Confirmar Contraseña",
             width=300,
+            content_padding=10,
             border_color=ft.colors.DEEP_PURPLE_500,
             password=True,
             can_reveal_password=True
@@ -32,6 +35,7 @@ class RegisterForm:
         self.email_field = ft.TextField(
             label="Email",
             width=300,
+            content_padding=10,
             border_color=ft.colors.DEEP_PURPLE_500,
         )
         self.alert = ft.AlertDialog()
