@@ -30,10 +30,8 @@ class TokenSchema:
     user: User
     
 
-
-
 class AuthService:
-    BASE_URL = "http://localhost:8002/auth"
+    BASE_URL = "http://localhost:8001/auth"
     bycrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     def __init__(self):
@@ -118,10 +116,7 @@ class AuthService:
 
         if role in {"superadministrator", "administrator"}:
             return self.login_superadministrator(email=email, password=password)
-
         return self.login(email=email, password=password, role=role )
-
-    def verify_token(self, token: str):
-        print(token)
-        
-        
+    
+    def verify_token(self, token: str) -> Dict:
+        return jwt.decode(str(token), self.SECRET_KEY, algorithms=[self.ALGORITHM])

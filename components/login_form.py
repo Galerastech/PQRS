@@ -3,10 +3,10 @@ from os import access
 
 import flet as ft
 import httpx
+import jwt
 import requests
 
 from services import AuthService
-
 
 class LoginForm:
 
@@ -101,7 +101,7 @@ class LoginForm:
                 ),
                 ft.ElevatedButton(
                     content=ft.Row(
-                        [ft.Image(src=f"/icons/googleIcon.png", height=30, width=30),
+                        [ft.Image(src="/icons/googleIcon.png", height=30, width=30),
                          ft.Text("Iniciar sesión con Google")]
                     ),
                     color=ft.colors.BLACK,
@@ -131,33 +131,58 @@ class LoginForm:
         self.page.update()
 
     def handle_login(self, e):
-
+        """
+        Maneja el proceso de inicio de sesión y la decodificación del token JWT
+        """
         user_data = {
-            "email": self.email_field.value.strip(),
+            "email": self.email_field.value,
             "password": self.password_field.value,
             "role": self.rol.value,
         }
+        
         success, message = self.auth_service.validate_login_user(**user_data)
+        
         if success:
             self.access_token = message.get("access_token")
-            self.current_user = message.get("user")
-            
-            verified_token = self.auth_service.verify_token(self.access_token)
-            print(verified_token)
-            
-            
-        # if success:
-        #     self.alert.title = ft.Text("Inicio de sesion exitoso")
-        #     self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
-        #     self.alert.on_dismiss = self.close_alert
-        #     self.alert.open = True
-        #     self.page.update()
-        # else:
-        #     self.alert.title = ft.Text("Error")
-        #     self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
-        #     self.alert.on_dismiss = self.close_alert
-        #     self.alert.open = True
-        #     self.page.update()
+            try:
+                # Decodificar el token con manejo de errores específicos
+                payload = jwt.decode(
+                    str(self.access_token),
+                    self.auth_service.SECRET_KEY,
+                    algorithms=[self.auth_service.ALGORITHM],
+                    options={
+                        "verify_sub": False,  # Deshabilitar verificación del subject
+                        "verify_exp": True    # Mantener verificación de expiración
+                    }
+                )
+                print("Token codificado:", self.access_token)
+                # print("Token payload:", payload)
+                
+                # Guardar información relevante en la sesión
+                self.page.session.set("access_token", self.access_token)
+                self.page.session.set("user_role", payload.get("role"))
+                self.page.session.set("user_id", payload.get("user_id"))
+                
+                # Mostrar alerta de éxito
+                self.alert.title = ft.Text("Inicio de sesión exitoso")
+                self.alert.content = ft.Text(message.get("detail", "Iniciando sesión"))
+                self.alert.on_dismiss = self.close_alert
+                self.alert.open = True
+                
+            #     # Redireccionar basado en el rol del payload
+            #     if payload.get("role"):
+            #         self.redirect_based_on_role(payload["role"])
+                    
+            # except jwt.ExpiredSignatureError:
+            #     self.show_error_alert("Token expirado. Por favor, inicie sesión nuevamente.")
+            # except jwt.InvalidTokenError as e:
+            #     self.show_error_alert(f"Token inválido: {str(e)}")
+            except Exception as e:
+                print(f"Error decodificando token: {str(e)}")
+            #     self.show_error_alert("Error procesando las credenciales")
+        
+        
+        self.page.update()
 
     def build(self):
         return self.form
@@ -173,7 +198,7 @@ class LoginForm:
     async def fetch_tenants(self):
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get("http://localhost:8002/tenants")
+                response = await client.get("http://localhost:8001/tenants")
                 response.raise_for_status()
                 tenants = response.json()
                 return tenants

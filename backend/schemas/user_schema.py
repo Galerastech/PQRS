@@ -2,37 +2,37 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr, constr
 
-
-class UserRegister(BaseModel):
-    tenant_id: int
+class UserBase(BaseModel):
     name: str
     email: EmailStr
-    password: constr(min_length=8)
     phone: str
     apartment: int
 
+class UserRegister(UserBase):
+    tenant_id: int
+    password:str = constr(min_length=8)
 
 class UserLoginSchema(BaseModel):
+    id: Optional[int] = None
     tenant_id: int
     email: EmailStr
-    password: str
+    password: Optional[str] = None
 
 
-class UserSchema(BaseModel):
+class UserSchema(UserBase):
+    id: Optional[int]
     tenant_id: Optional[int]
     name: str
     email: EmailStr
-    phone: Optional[str]
     apartment: int
     role: str
 
     class Config:
         from_attributes = True
-        orm_mode = True
 
-class AdminSchemaRequest(BaseModel):
+class AdminSchema(BaseModel):
     email: EmailStr
-    password: str
+    password: Optional[str] = None
 
     class Config:
         from_attributes = True
