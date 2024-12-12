@@ -129,6 +129,9 @@ class LoginForm:
     def close_alert(self, e):
         self.alert.open = False
         self.page.update()
+        
+        
+# TODO: Manejar el proceso de inicio de sesión y la decodificación del token JWT (refactorización)
 
     def handle_login(self, e):
         """
@@ -138,7 +141,9 @@ class LoginForm:
             "email": self.email_field.value,
             "password": self.password_field.value,
             "role": self.rol.value,
+            "tenant": int(self.tenant_container.controls[0].value) if self.tenant_container.visible else None
         }
+        
         
         success, message = self.auth_service.validate_login_user(**user_data)
         
@@ -160,8 +165,9 @@ class LoginForm:
                 
                 # Guardar información relevante en la sesión
                 self.page.session.set("access_token", self.access_token)
-                self.page.session.set("user_role", payload.get("role"))
-                self.page.session.set("user_id", payload.get("user_id"))
+                self.page.session.set("role", payload.get("role"))
+                self.page.session.set("user", payload.get("user_id"))
+                self.page.session.set("tenant", payload.get("tenant_id"))
                 
                 # Mostrar alerta de éxito
                 self.alert.title = ft.Text("Inicio de sesión exitoso")
@@ -169,9 +175,17 @@ class LoginForm:
                 self.alert.on_dismiss = self.close_alert
                 self.alert.open = True
                 
-            #     # Redireccionar basado en el rol del payload
-            #     if payload.get("role"):
-            #         self.redirect_based_on_role(payload["role"])
+                print("Token decodificado:", payload)
+                if payload.get("role"):
+                    router = self.page.session.get("router")
+                    router.redirect_based_on_role(payload["role"])
+                    
+                else:
+                    self.page.go("/login")
+            
+                # Redireccionar basado en el rol del payload
+                # if payload.get("role"):
+                #     self.redirect_based_on_role(payload["role"])
                     
             # except jwt.ExpiredSignatureError:
             #     self.show_error_alert("Token expirado. Por favor, inicie sesión nuevamente.")
@@ -179,8 +193,12 @@ class LoginForm:
             #     self.show_error_alert(f"Token inválido: {str(e)}")
             except Exception as e:
                 print(f"Error decodificando token: {str(e)}")
-            #     self.show_error_alert("Error procesando las credenciales")
-        
+                # self.show_error_alert("Error procesando las credenciales")
+        else:
+            self.alert.title = ft.Text("Error en el inicio de sesión")
+            self.alert.content = ft.Text(message)
+            self.alert.on_dismiss = self.close_alert
+            self.alert.open = True
         
         self.page.update()
 
@@ -216,7 +234,7 @@ class LoginForm:
             tenant_dropdown = ft.Dropdown(
                 dense=True,
                 label="Seleccione el Edificio",
-                options=[ft.dropdown.Option(text=tenant.get("name"), data=tenant.get("id")) 
+                options=[ft.dropdown.Option(key=str(tenant.get("id")), text=tenant.get("name") ) 
                          for tenant in tenants],
                 width=300,
                 content_padding=10,

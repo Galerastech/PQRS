@@ -60,7 +60,7 @@ async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
             )
 
         access_token = create_access_token(
-            data={"sub": user.id, 'email': user.email, 'role': user.role},
+            data={"sub": user.id, 'email': user.email, 'role': user.role, 'tenant_id': user.tenant_id},
             expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
         )
         return TokenSchema(access_token=access_token, token_type="bearer",

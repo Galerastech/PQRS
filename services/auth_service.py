@@ -9,14 +9,6 @@ import requests
 
 
 @dataclass
-class User:
-    tenant_id: Optional[int]
-    name: str
-    email: str
-    phone: Optional[str]
-    apartment: Optional[int]
-    role: str
-@dataclass
 class TokenResponse:
     sub: int
     role: str
@@ -27,7 +19,6 @@ class TokenSchema:
     access_token: str
     token_type: str
     expires_in: int
-    user: User
     
 
 class AuthService:
@@ -49,9 +40,9 @@ class AuthService:
         except requests.exceptions.RequestException as e:
             return False, str(e)
 
-    def login(self, email: str, password: str, role: str) -> Tuple[bool, Any]:
-        payload = {"email": email, "password": password, "rol": role}
-        success, data = self._make_request("POST", "/signup", json=payload)
+    def login(self, email: str, password: str, tenant: int = None) -> Tuple[bool,Any]:
+        payload = {"email": email, "password": password,  "tenant_id": tenant}
+        success, data = self._make_request("POST", "/signin", json=payload)
 
         if not success:
             return False, data
@@ -60,22 +51,7 @@ class AuthService:
             return False, "Error al iniciar sesion, verifica tus credenciales"
 
         try:
-            user_data = data.get("user", {})
-            self.token = TokenSchema(
-                access_token=data.get("access_token", ""),
-                token_type="Bearer",
-                expires_in=data.get("expires_in", 0),
-                user=User(
-                    tenant_id=user_data.get("tenant_id"),
-                    name=user_data.get("name", ""),
-                    email=user_data.get("email", ""),
-                    phone=user_data.get("phone"),
-                    apartment=int(user_data.get("apartment")),
-                    role=user_data.get("role", ""),
-                )
-            )
-            self.current_user = self.token.user
-            return True, self.token
+            return True, data
         except (KeyError, TypeError) as e:
             return False, f"Error al procesar los datos de la respuesta: {str(e)}"
 
@@ -110,13 +86,13 @@ class AuthService:
         success, data = self._make_request("GET", "/tenants")
         return data if success else []
 
-    def validate_login_user(self, email: str, password: str, role: str) -> Tuple[bool, Any]:
+    def validate_login_user(self, email: str, password: str, role: str, tenant :int = None) -> Tuple[bool, Any]:
         if not all([email, password, role]):
             return False, "Todos los campos son requeridos"
 
         if role in {"superadministrator", "administrator"}:
             return self.login_superadministrator(email=email, password=password)
-        return self.login(email=email, password=password, role=role )
-    
+        return self.login(email=email, password=password, tenant=tenant)
+
     def verify_token(self, token: str) -> Dict:
         return jwt.decode(str(token), self.SECRET_KEY, algorithms=[self.ALGORITHM])
