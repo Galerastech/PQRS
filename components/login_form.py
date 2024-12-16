@@ -1,12 +1,11 @@
 import asyncio
-from os import access
 
 import flet as ft
 import httpx
-import jwt
 import requests
 
 from services import AuthService
+
 
 class LoginForm:
 
@@ -21,6 +20,11 @@ class LoginForm:
             actions_alignment=ft.MainAxisAlignment.END,
             alignment=ft.alignment.center
         )
+        self.roles = {
+            "SuperAdministrador": "superadministrator",
+            "administrador": "administrator",
+            "residente": "resident"
+        }
 
         self.email_field = ft.TextField(
             label="Email",
@@ -51,18 +55,8 @@ class LoginForm:
             dense=True,
             label="Rol",
             options=[
-                ft.dropdown.Option(
-                    'superadministrator',
-                    alignment=ft.alignment.center,
-                ),
-                ft.dropdown.Option(
-                    'administrator',
-                    alignment=ft.alignment.center,
-                ),
-                ft.dropdown.Option(
-                    'Residente',
-                    alignment=ft.alignment.center,
-                ),
+                ft.dropdown.Option( key=key, text=value, alignment=ft.alignment.center) 
+                for value, key in self.roles.items()
             ],
             label_style=ft.TextStyle(color=ft.colors.BLACK),
             border_color=ft.colors.DEEP_PURPLE_500,
@@ -101,7 +95,7 @@ class LoginForm:
                 ),
                 ft.ElevatedButton(
                     content=ft.Row(
-                        [ft.Image(src="/icons/googleIcon.png", height=30, width=30),
+                        [ft.Image(src=f"/icons/googleIcon.png", height=30, width=30),
                          ft.Text("Iniciar sesión con Google")]
                     ),
                     color=ft.colors.BLACK,
@@ -129,83 +123,33 @@ class LoginForm:
     def close_alert(self, e):
         self.alert.open = False
         self.page.update()
-        
-        
-# TODO: Manejar el proceso de inicio de sesión y la decodificación del token JWT (refactorización)
 
     def handle_login(self, e):
-        """
-        Maneja el proceso de inicio de sesión y la decodificación del token JWT
-        """
+
         user_data = {
-            "email": self.email_field.value,
+            "email": self.email_field.value.strip(),
             "password": self.password_field.value,
             "role": self.rol.value,
-            "tenant": int(self.tenant_container.controls[0].value) if self.tenant_container.visible else None
+            "tenant_id": self.tenant_container.controls[0].value if self.tenant_container.controls else None
         }
-        
-        
         success, message = self.auth_service.validate_login_user(**user_data)
-        
+        self.page.client_storage.set("token", message.get("token"))
         if success:
-            self.access_token = message.get("access_token")
-            try:
-                # Decodificar el token con manejo de errores específicos
-                payload = jwt.decode(
-                    str(self.access_token),
-                    self.auth_service.SECRET_KEY,
-                    algorithms=[self.auth_service.ALGORITHM],
-                    options={
-                        "verify_sub": False,  # Deshabilitar verificación del subject
-                        "verify_exp": True    # Mantener verificación de expiración
-                    }
-                )
-                print("Token codificado:", self.access_token)
-                # print("Token payload:", payload)
-                
-                # Guardar información relevante en la sesión
-                self.page.session.set("access_token", self.access_token)
-                self.page.session.set("role", payload.get("role"))
-                self.page.session.set("user", payload.get("user_id"))
-                self.page.session.set("tenant", payload.get("tenant_id"))
-                
-                # Mostrar alerta de éxito
-                self.alert.title = ft.Text("Inicio de sesión exitoso")
-                self.alert.content = ft.Text(message.get("detail", "Iniciando sesión"))
-                self.alert.on_dismiss = self.close_alert
-                self.alert.open = True
-                
-                print("Token decodificado:", payload)
-                if payload.get("role"):
-                    router = self.page.session.get("router")
-                    router.redirect_based_on_role(payload["role"])
-                    
-                else:
-                    self.page.go("/login")
-            
-                # Redireccionar basado en el rol del payload
-                # if payload.get("role"):
-                #     self.redirect_based_on_role(payload["role"])
-                    
-            # except jwt.ExpiredSignatureError:
-            #     self.show_error_alert("Token expirado. Por favor, inicie sesión nuevamente.")
-            # except jwt.InvalidTokenError as e:
-            #     self.show_error_alert(f"Token inválido: {str(e)}")
-            except Exception as e:
-                print(f"Error decodificando token: {str(e)}")
-                # self.show_error_alert("Error procesando las credenciales")
-        else:
-            self.alert.title = ft.Text("Error en el inicio de sesión")
-            self.alert.content = ft.Text(message)
-            self.alert.on_dismiss = self.close_alert
+            self.alert.title = ft.Text("Inicio de sesion exitoso")
+            self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
             self.alert.open = True
-        
-        self.page.update()
+            self.page.update()
+        else:
+            self.alert.title = ft.Text("Error")
+            self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
+            self.alert.open = True
+            self.page.update()
 
     def build(self):
         return self.form
 
     def handle_role_change(self, e):
+        print(e.control.value)
         if e.control.value != "superadministrator":
             asyncio.run(self.load_tenants())
         else:
@@ -213,28 +157,16 @@ class LoginForm:
             self.tenant_container.visible = False
         self.page.update()
 
-    async def fetch_tenants(self):
-        try:
-            async with httpx.AsyncClient() as client:
-                response = await client.get("http://localhost:8001/tenants")
-                response.raise_for_status()
-                tenants = response.json()
-                return tenants
-        except Exception as e:
-            print(e)
-            return []
-
     async def load_tenants(self):
-        tenants = await self.fetch_tenants()
+        tenants =  await self.auth_service.get_tenants()
         self.update_tenant_dropdown(tenants)
 
     def update_tenant_dropdown(self, tenants):
         if tenants:
-
             tenant_dropdown = ft.Dropdown(
                 dense=True,
                 label="Seleccione el Edificio",
-                options=[ft.dropdown.Option(key=str(tenant.get("id")), text=tenant.get("name") ) 
+                options=[ft.dropdown.Option(key=tenant.get("id"),text=tenant.get("name"),alignment=ft.alignment.center) 
                          for tenant in tenants],
                 width=300,
                 content_padding=10,
@@ -246,4 +178,3 @@ class LoginForm:
         else:
             self.tenant_container.controls.clear()
             self.tenant_container.visible = False
-        self.page.update()

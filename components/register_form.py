@@ -69,7 +69,7 @@ class RegisterForm:
                                 weight=ft.FontWeight.BOLD,
                                 color=ft.colors.DEEP_PURPLE_500
                             ),
-                            on_click=lambda _: self.page.go("/login")
+                            on_click=lambda _: self.page.go("/")
                         )
                         ]
                         )
@@ -94,7 +94,7 @@ class RegisterForm:
             )
             self.alert.content = ft.Text("Usuario registrado correctamente. Serás redirigido al inicio de sesion")
 
-            self.page.go("/login")
+            self.page.go("/")
         else:
             self.alert.title = ft.Text(
                 "Error en el registro de Usuario",

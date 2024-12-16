@@ -1,23 +1,17 @@
-from layouts import AuthLayout, SuperAdminLayout,AdminLayout, ResidentLayout
-from pages import LoginPage, RegisterPage, SuperAdminDashboard, Dashboard, AdminDashboard
+from ast import Not
+from httpx import Auth
+from layouts import AuthLayout, MainLayout
+from pages import LoginPage, RegisterPage, NotFoundPage
+from pages.super_admin_dashboard import SuperAdminDashboard
 
 
 def get_routes(page):
-    auth_layout = AuthLayout(page)
-    super_admin_layout = SuperAdminLayout(page)
-    admin_layout = AdminLayout(page)
-    resident_layout = ResidentLayout(page)
 
     return {
-        "/login": {"layout": auth_layout, "page": lambda: LoginPage(page).build()},
-        "/register": {"layout": auth_layout, "page": lambda: RegisterPage(page).build()},
-        "/superadmin-dashboard": {"layout": super_admin_layout, "page": lambda: SuperAdminDashboard(page).build()},
-        "/administrator-dashboard": {"layout": admin_layout, "page": lambda: AdminDashboard(page).build()},
-        "/dashboard": {"layout": resident_layout, "page": lambda: Dashboard(page).build()},
-    }
-def protected_routes():
-    return {
-        "/superadmin-dashboard": "superadministrator",
-        "/administrator-dashboard": "administrador",
-        "/dashboard": "residente",
+        "/": {"layout": AuthLayout(page), "page": lambda: LoginPage(page).build()},
+        "/register": {"layout": AuthLayout(page), "page": lambda: RegisterPage(page).build()},
+        "/404": {"layout": MainLayout(page), "page": lambda: NotFoundPage(page).build()},
+        "/super-admin-dashboard": {"layout": MainLayout(page), "page": lambda: SuperAdminDashboard(page).build(),"protected": True, "role": "super-administrador"},
+        "/admin-dashboard": {"layout": MainLayout(page), "page": lambda: AdminDashboard(page).build(),"protected": True, "role": "administrador"},
+        "/dashboard": {"layout": MainLayout(page), "page": lambda: Dashboard(page).build(),"protected": True, "role": "residente"},
     }
