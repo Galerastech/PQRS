@@ -7,7 +7,7 @@ from services import AuthService
 class RegisterForm:
     def __init__(self, page: ft.Page):
         self.page = page
-        self.auth_service = AuthService()
+        self.auth_service = AuthService(self.page)
 
         self.username_field = ft.TextField(
             label="Usuario",

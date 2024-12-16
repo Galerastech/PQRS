@@ -48,7 +48,7 @@ def main(page: ft.Page):
 
     page.session.set("access_token", None)
     page.session.set("user_role", None)
-    page.session.set("router", Router(page, auth_service=AuthService()))
+    page.session.set("router", Router(page, auth_service=AuthService(page)))
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")

@@ -11,7 +11,7 @@ class LoginForm:
 
     def __init__(self, page: ft.Page):
         self.page = page
-        self.auth_service = AuthService()
+        self.auth_service = AuthService(page)
         self.tenant_container = ft.Column(visible=False)
         self.alert = ft.AlertDialog(
             open=False,
@@ -134,20 +134,14 @@ class LoginForm:
         }
         success, message = self.auth_service.validate_login_user(**user_data)
         print(message)
-        self.page.client_storage.set("token", message.get("access_token"))
-        token = self.page.client_storage.get("token")
-        if token == message.get("access_token"):
-            r = "token correcto"
         if success:
             self.alert.title = ft.Text("Inicio de sesion exitoso")
-            self.alert.content = ft.Text(f"Bienvenido { message.get('user').get('role') } { message.get('user').get('name') }")
-            self.alert.open = True
-            self.page.update()
+            self.alert.content = ft.Text(f"{message}")
+            self.page.go("/dashboard")
+            
         else:
             self.alert.title = ft.Text("Error")
-            self.alert.content = ft.Text("Error al iniciar sesion, verifica tus credenciales")
-            self.alert.open = True
-            self.page.update()
+            self.alert.content = ft.Text(f"{message}")
 
     def build(self):
         return self.form
