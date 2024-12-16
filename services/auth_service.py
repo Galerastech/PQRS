@@ -39,31 +39,9 @@ class AuthService:
 
     def login(self, email: str, password: str, role: str, tenant_id: int) -> Tuple[bool, Any]:
         payload = {"email": email, "password": password, "rol": role, "tenant_id": tenant_id}
-        success,data = self._make_request("POST", "/auth/signin", json=payload)
+        return self._make_request("POST", "/auth/signin", json=payload)
 
-        if not success:
-            return False, data
-
-        try:
-            user_data = data.get("user", {})
-            self.token = TokenSchema(
-                access_token=data.get("access_token", ""),
-                token_type="Bearer",
-                expires_in=data.get("expires_in", 0),
-            )
-            self.current_user = User(
-                tenant_id=user_data.get("tenant_id"),
-                name=user_data.get("name", ""),
-                email=user_data.get("email", ""),
-                phone=user_data.get("phone"),
-                apartment=int(user_data.get("apartment")),
-                role=user_data.get("role", ""),
-            )
-
-            return True, {'user': self.current_user, 'token': self.token}
-        except (KeyError, TypeError) as e:
-            return False, f"Error al procesar los datos de la respuesta: {str(e)}"
-
+        
     def login_superadministrator(self, email: str, password: str) -> Tuple[bool, Union[Dict, str]]:
         payload = {"email": email, "password": password}
         return self._make_request("POST", "/auth/superuser", json=payload)

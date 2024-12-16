@@ -133,10 +133,14 @@ class LoginForm:
             "tenant_id": self.tenant_container.controls[0].value if self.tenant_container.controls else None
         }
         success, message = self.auth_service.validate_login_user(**user_data)
-        self.page.client_storage.set("token", message.get("token"))
+        print(message)
+        self.page.client_storage.set("token", message.get("access_token"))
+        token = self.page.client_storage.get("token")
+        if token == message.get("access_token"):
+            r = "token correcto"
         if success:
             self.alert.title = ft.Text("Inicio de sesion exitoso")
-            self.alert.content = ft.Text(message.get("detail", "Iniciando sesion"))
+            self.alert.content = ft.Text(f"Bienvenido { message.get('user').get('role') } { message.get('user').get('name') }")
             self.alert.open = True
             self.page.update()
         else:
