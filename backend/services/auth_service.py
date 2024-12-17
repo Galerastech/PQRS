@@ -16,10 +16,14 @@ class AuthService:
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     def check_user_existence(self, db: Session, user: User):
-        return db.query(User).filter(
-            User.tenant_id == user.tenant_id,
-            User.email == user.email,
-        ).first()
+        return (
+            db.query(User)
+            .filter(
+                User.tenant_id == user.tenant_id,
+                User.email == user.email,
+            )
+            .first()
+        )
 
     def get_password(self, password):
         return self.pwd_context.hash(password)
@@ -42,13 +46,20 @@ class AuthService:
         db.refresh(new_user)
         return UserSchema.model_validate(new_user)
 
-    def authenticate_user(self, db: Session, email: EmailStr, password: str, tenant_id: int | None = None) -> Optional[UserSchema]:
-        user = db.query(User).filter(User.email == email, User.tenant_id == tenant_id).first()
+    def authenticate_user(
+        self, db: Session, email: EmailStr, password: str ) -> Optional[UserSchema]:
+        user = (
+            db.query(User)
+            .filter(User.email == email)
+            .first()
+        )
         if user and self.verify_password(password, user.password):
             return user
         return None
 
-    def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    def create_access_token(
+        self, data: dict, expires_delta: Optional[timedelta] = None
+    ) -> str:
         if expires_delta:
             expire = datetime.now() + expires_delta
         else:
@@ -61,6 +72,8 @@ class AuthService:
             raise ValueError("SECRET_KEY must not be None")
         if settings.ALGORITHM is None:
             raise ValueError("ALGORITHM must not be None")
-            
-        encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+        encoded_jwt = jwt.encode(
+            to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+        )
         return encoded_jwt

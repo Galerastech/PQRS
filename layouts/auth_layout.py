@@ -1,15 +1,16 @@
 import flet as ft
 
+from layouts.base_layout import BaseLayout
 
-class AuthLayout:
+
+class AuthLayout(BaseLayout):
     def __init__(self, page: ft.Page):
-        self.page = page
-        self.content = ft.Container()
+        super().__init__(page)
         self.image = ft.Image(
             src="images/loginImage.jpg",
             fit=ft.ImageFit.COVER,
             expand=2,
-            width=860,
+            width=768,
             height=540,
             border_radius=ft.border_radius.only(top_left=12, bottom_left=12),
         )
@@ -19,27 +20,21 @@ class AuthLayout:
         self.image.visible = self.page.width >= 428
         self.page.update()
 
-    def update_content(self, new_content):
-        self.content.content = new_content
-        self.page.update()
-
     def build(self):
         return ft.ResponsiveRow(
             controls=[
                 ft.Card(
                     col={"lg": 8},
-                    color=ft.colors.SECONDARY_CONTAINER,
+                    color=ft.colors.PRIMARY_CONTAINER,
                     content=ft.Row(
-                        controls=[
-                            self.image,
-                            self.content
-                        ],
+                        controls=[self.image, self.content],
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                        alignment=ft.MainAxisAlignment.CENTER
+                        alignment=ft.MainAxisAlignment.CENTER,
                     ),
-                    width=1200
+                    width=1200,
                 ),
             ],
+            spacing=20,
             alignment=ft.MainAxisAlignment.CENTER,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )

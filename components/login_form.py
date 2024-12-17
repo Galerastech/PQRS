@@ -26,24 +26,7 @@ class LoginForm:
             "residente": "resident"
         }
 
-        self.email_field = ft.TextField(
-            label="Email",
-            label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=300,
-            content_padding=10,
-            autofocus=True
-        )
-
-        self.password_field = ft.TextField(
-            label="Contraseña",
-            content_padding=10,
-            label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            password=True,
-            can_reveal_password=True,
-            width=300
-        )
+        
 
         self.error_text = ft.Text(
             color=ft.colors.RED_400,

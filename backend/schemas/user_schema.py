@@ -13,12 +13,12 @@ class UserRegister(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
-    tenant_id: int
     email: EmailStr
     password: str
 
 
 class UserSchema(BaseModel):
+    id : int
     tenant_id: Optional[int]
     name: str
     email: EmailStr
