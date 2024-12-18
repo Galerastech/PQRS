@@ -24,7 +24,6 @@ def main(page: ft.Page):
         "SF Pro Regular": "fonts/SFProText-Regular.ttf",
         "SF Pro Semibold": "fonts/SFProText-Semibold.ttf",
         "SF Pro SemiboldItalic": "fonts/SFProText-SemiboldItalic.ttf",
-
         "Poppins ThinItalic": "fonts/poppins/Poppins-ThinItalic.ttf",
         "Poppins Thin": "fonts/poppins/Poppins-Thin.ttf",
         "Poppins Semibold": "fonts/poppins/Poppins-Semibold.ttf",
@@ -51,5 +50,6 @@ def main(page: ft.Page):
 
     page.update()
 
+
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets", port=8000)

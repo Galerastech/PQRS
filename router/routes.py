@@ -1,6 +1,5 @@
-from ast import Not
-from httpx import Auth
 from layouts import AuthLayout, MainLayout
+from services.auth_service import UserRole
 from views import LoginView
 
 
@@ -11,10 +10,10 @@ def get_routes(page):
             "layout": AuthLayout,
             "public": True,
         },
-        "/superadmin-dashboard": {
+        "/super-admin": {
             "view": lambda: SuperAdminDashboard(page),
             "layout": MainLayout,
             "protected": True,
-            "role": "superadmin",
+            "role": [UserRole.ADMIN, UserRole.SUPER_ADMIN],
         },
     }

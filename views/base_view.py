@@ -14,5 +14,9 @@ class BaseView(ft.UserControl):
 
     def show_success(self, message: str):
         self.page.show_snack_bar(
-            ft.SnackBar(content=ft.Text(message), bgcolor=ft.colors.SUCCESS)
+            ft.SnackBar(
+                content=ft.Text(message),
+                bgcolor=ft.colors.PRIMARY,
+                behavior=ft.SnackBarBehavior.FLOATING,
+            )
         )

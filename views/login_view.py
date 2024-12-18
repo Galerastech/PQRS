@@ -1,6 +1,4 @@
 import flet as ft
-
-from components.login_form import LoginForm
 from .base_view import BaseView
 
 
@@ -75,15 +73,21 @@ class LoginView(BaseView):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             width=320,
         )
-    
-    async def handle_login(self,_):
+
+    async def handle_login(self, _) -> None:
         try:
+            if not self.password_field.value and not self.email_field.value:
+                self.show_error("Por favor, complete los campos de email y contraseña.")
+                return
+
             user_data = {
-                "email": self.email_field.value.strip(),
+                "username": self.email_field.value.strip(),
                 "password": self.password_field.value,
             }
-            message = await self.page.auth_service.login(**user_data)
-            print(message)
-            
+            success, message = await self.page.auth_service.login(**user_data)
+            if success:
+                self.show_success(message)
+            else:
+                self.show_error(message)
         except Exception as e:
             print(e)

@@ -1,4 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+from multiprocessing import AuthenticationError
+from typing import Annotated
 from fastapi import APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -13,43 +15,33 @@ router = APIRouter(prefix="/auth")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-@router.post("/signup", response_model=UserSchema)
-async def signup(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    try:
-        existing_user = auth_service.check_user_existence(db, data)
-        
-        if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Usuario ya se encuentra en la base de datos")
-        new_user = auth_service.create_user(db=db, user=data)
-        return UserSchema.model_validate(new_user)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+auth_service = AuthService()
 
 
-#  TODO: Verificar que lo que realmente necesito se muestre en el dahsboard tanto del super admin comoo del admin
-@router.post("/login", response_model=UserSchema)
-async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
+@router.post("/login", response_model=TokenSchema)
+async def login(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(get_db),
+):
     try:
         user = auth_service.authenticate_user(
-            db, data.email,
-            data.password)
+            db, email=form_data.username, password=form_data.password
+        )
 
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales incorrectas verifique nuevamente",
-                headers={"WWW-Authenticate": "Bearer"}
+                detail="Credenciales incorrectas Verifique nuevamente",
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
-        
-        return UserSchema.model_validate(user)
-    except ValueError as e:
+        access_token = auth_service.create_access_token(
+            data={"sub": user.id, "tenant_id": user.tenant_id, "role": user.role}
+        )
+        return TokenSchema.model_validate(access_token)
+    except AuthenticationError as e:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
         )

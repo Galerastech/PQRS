@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 import json
-from typing import Optional
+from typing import Optional, Tuple
 import flet as ft
 import httpx
 import jwt
@@ -22,24 +22,34 @@ class AuthService:
         self.ALGOTITHM = settings.ALGORITHM
         self.TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
         self.API_URL = "http://localhost:8001"
-        self._sesion_data = {}
+        self._sesion_data :Dict[str, Any] = {}
 
-        # Cargamos la session al iniciar
-        if not hasattr(self.page, "session_data"):
-            self.page.sesion_data = {}
+        self._load_session()
 
-    async def login(self, email: str, password: str) -> dict:
+    async def login(self, username: str, password: str) -> Tuple[bool, str]:
+        # -> dict:
         """
         Realiza el login del usuario y giarda la session
         """
         try:
-            payload = {"email": email, "password": password}
-            user_data = await self._make_request("POST", "/auth/login", json=payload)
-            access_token = self._create_access_token(user_data)
-            self._save_session({"user": user_data})
-            return {"access_token": access_token, "user": user_data}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+            payload = {"username": username, "password": password}
+            response = await self._make_request("POST", "/auth/login", data=payload)
+            if not response:
+                return False, "Error en la conexion con del servidor"
+
+            if "acces_token" in response:
+                token_data = jwt.decode(
+                    response.get("access_token"),
+                    self.SECRET_KEY,
+                    algorithms=[self.ALGORITHM],
+                )
+                session_data = {
+                    "token": token_data
+                }
+            else:
+                return False, response.get("detail")
+        except expression as identifier:
+            pass
 
     async def logout(self) -> None:
         """
@@ -55,7 +65,7 @@ class AuthService:
         """Helper to handle HTTP requests."""
         url = f"{self.API_URL}{endpoint}"
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=30) as client:
                 response = await client.request(method, url, **kwargs)
                 response.raise_for_status()
                 return response.json()
@@ -63,7 +73,7 @@ class AuthService:
             print(
                 f"Request failed with status code {e.response.status_code}: {e.response.text}"
             )
-            return None
+            return response.json().get("detail")
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             return None
@@ -73,8 +83,6 @@ class AuthService:
         Guarda la session en el storage
         """
         await self.page.session.set("session_data", json.dumps(data))
-
-    
 
     def get_user_role(self) -> Optional[UserRole]:
         user = self.get_current_user()

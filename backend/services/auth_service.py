@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from backend.models import Tenant, User
+from backend.models import User
 from pydantic import EmailStr
 from backend.schemas import UserSchema
 import jwt
@@ -47,19 +47,16 @@ class AuthService:
         return UserSchema.model_validate(new_user)
 
     def authenticate_user(
-        self, db: Session, email: EmailStr, password: str ) -> Optional[UserSchema]:
-        user = (
-            db.query(User)
-            .filter(User.email == email)
-            .first()
-        )
+        self, db: Session, email: EmailStr, password: str
+    ) -> Optional[UserSchema]:
+        user = db.query(User).filter(User.email == email).first()
         if user and self.verify_password(password, user.password):
             return user
         return None
 
     def create_access_token(
         self, data: dict, expires_delta: Optional[timedelta] = None
-    ) -> str:
+    ) -> dict:
         if expires_delta:
             expire = datetime.now() + expires_delta
         else:
@@ -68,12 +65,11 @@ class AuthService:
 
         to_encode = data.copy()
         to_encode.update({"exp": int(expire.timestamp())})
-        if settings.SECRET_KEY is None:
-            raise ValueError("SECRET_KEY must not be None")
-        if settings.ALGORITHM is None:
-            raise ValueError("ALGORITHM must not be None")
-
         encoded_jwt = jwt.encode(
             to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
         )
-        return encoded_jwt
+        return {
+            "access_token": encoded_jwt,
+            "token_type": "bearer",
+            "expires_in": expire_minutes,
+        }
