@@ -1,4 +1,6 @@
 import flet as ft
+
+from services.auth_service import UserRole
 from .base_view import BaseView
 
 
@@ -79,15 +81,25 @@ class LoginView(BaseView):
             if not self.password_field.value and not self.email_field.value:
                 self.show_error("Por favor, complete los campos de email y contraseña.")
                 return
-
+            self.page.session.get("session_data")
             user_data = {
                 "username": self.email_field.value.strip(),
                 "password": self.password_field.value,
             }
             success, message = await self.page.auth_service.login(**user_data)
-            if success:
-                self.show_success(message)
-            else:
-                self.show_error(message)
+            print(message)
+            # if success:
+            #     self.show_success(message)
+            #     # user_role = self.page.auth_service.get_user_role()
+            #     # if user_role == UserRole.SUPER_ADMIN:
+            #     #     self.page.go("/super-admin")
+            #     # elif user_role == UserRole.ADMIN:
+            #     #     self.page.go("/admin-dashboard")
+            #     # elif user_role == UserRole.RESIDENT:
+            #     #     self.page.go("/dashboard")
+            #     # else:
+            #     #     self.show_error("Rol no válido")
+            # else:
+            #     self.show_error(message)
         except Exception as e:
-            print(e)
+            self.show_error(str(e))

@@ -1,6 +1,6 @@
 from layouts import AuthLayout, MainLayout
 from services.auth_service import UserRole
-from views import LoginView
+from views import LoginView, SuperAdminView
 
 
 def get_routes(page):
@@ -11,9 +11,8 @@ def get_routes(page):
             "public": True,
         },
         "/super-admin": {
-            "view": lambda: SuperAdminDashboard(page),
+            "view": lambda: SuperAdminView(page),
             "layout": MainLayout,
-            "protected": True,
-            "role": [UserRole.ADMIN, UserRole.SUPER_ADMIN],
+            "public": False,
         },
     }

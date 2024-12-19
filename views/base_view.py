@@ -10,7 +10,6 @@ class BaseView(ft.UserControl):
         self.page.show_snack_bar(
             ft.SnackBar(content=ft.Text(message), bgcolor=ft.colors.ERROR)
         )
-        self.page.add(ft.Image(src="images/not_found_image.svg"))
 
     def show_success(self, message: str):
         self.page.show_snack_bar(

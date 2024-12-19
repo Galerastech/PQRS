@@ -36,7 +36,7 @@ async def login(
             )
 
         access_token = auth_service.create_access_token(
-            data={"sub": user.id, "tenant_id": user.tenant_id, "role": user.role}
+            data={"sub": str(user.id), "tenant_id": user.tenant_id, "role": user.role}
         )
         return TokenSchema.model_validate(access_token)
     except AuthenticationError as e:

@@ -2,7 +2,7 @@ import flet as ft
 from typing import Dict, Any, Callable
 from dataclasses import dataclass
 from .routes import get_routes
-from services.auth_service import AuthService
+from services.auth_service import AuthService, UserRole
 
 
 @dataclass
@@ -149,3 +149,18 @@ class Router:
         Obtiene la ruta actual
         """
         return self.page.route
+
+    def check_session(self):
+        """
+        Verifica si hay una sesión activa
+        """
+        if self.auth_service.is_authenticated():
+            user_role = self.auth_service.get_user_role()
+            if user_role == UserRole.SUPER_ADMIN:
+                self.page.go("/super-admin")
+            elif user_role == UserRole.ADMIN:
+                self.page.go("/admin-dashboard")
+            elif user_role == UserRole.RESIDENT:
+                self.page.go("/dashboard")
+        else:
+            self.page.go("/dashboard")

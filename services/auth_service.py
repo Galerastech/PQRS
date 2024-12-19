@@ -1,8 +1,6 @@
-import asyncio
-from datetime import datetime, timedelta, timezone
 from enum import Enum
 import json
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 import flet as ft
 import httpx
 import jwt
@@ -19,10 +17,10 @@ class AuthService:
     def __init__(self, page: ft.Page):
         self.page = page
         self.SECRET_KEY = settings.SECRET_KEY
-        self.ALGOTITHM = settings.ALGORITHM
+        self.ALGORITHM = settings.ALGORITHM
         self.TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
         self.API_URL = "http://localhost:8001"
-        self._sesion_data :Dict[str, Any] = {}
+        self._sesion_data: Dict[str, Any] = {}
 
         self._load_session()
 
@@ -34,22 +32,25 @@ class AuthService:
         try:
             payload = {"username": username, "password": password}
             response = await self._make_request("POST", "/auth/login", data=payload)
+            print(response)
             if not response:
                 return False, "Error en la conexion con del servidor"
 
-            if "acces_token" in response:
+            if response.get("access_token"):
+                print("Token: ", response.get("access_token"))
                 token_data = jwt.decode(
                     response.get("access_token"),
                     self.SECRET_KEY,
                     algorithms=[self.ALGORITHM],
                 )
-                session_data = {
-                    "token": token_data
-                }
+                session_data = token_data
+                await self._save_to_storage(session_data)
+                return True, "Inicio de session exitoso"
             else:
                 return False, response.get("detail")
-        except expression as identifier:
-            pass
+        except Exception as ex:
+            print(f"An error occurred: {str(ex)}")
+            return False, "Error en la conexion con del servidor"
 
     async def logout(self) -> None:
         """
@@ -85,13 +86,16 @@ class AuthService:
         await self.page.session.set("session_data", json.dumps(data))
 
     def get_user_role(self) -> Optional[UserRole]:
-        user = self.get_current_user()
-        role = user.get("role")
-        try:
-            return UserRole(role)
-        except ValueError as ve:
-            print(f"Invalid user role: {role}")
-            return None
+        session_data = self.page.session.get("session_data")
+        if session_data:
+            session_data = json.loads(session_data)
+            role = session_data.get("role")
+            try:
+                return UserRole(role)
+            except Exception as ex:
+                print(f"Error getting user role: {role} - {str(ex)}")
+                return None
+        return None
 
     def is_authenticated(self) -> bool:
         token = self.page.session.get("token")
@@ -129,28 +133,21 @@ class AuthService:
     def _load_session(self):
         try:
             stored_session = self.page.session.get("session_data")
-            if stored_session:
-                session_data = json.loads(stored_session)
-                self.page.session.update(session_data)
-                if not self.is_authenticated():
-                    self._delete_stored_session()
-        except Exception:
+            if not stored_session:
+                return
+            if isinstance(stored_session, str):
+                stored_session = json.loads(stored_session)
+
+            if stored_session.get("token"):
+                self._session_data = stored_session
+            else:
+                self._delete_stored_session()
+        except Exception as e:
+            print(f"Error loading session data :{e}")
             self._delete_stored_session()
 
     def _delete_stored_session(self):
         self.page.session.remove("session_data")
-
-    def _create_access_token(self, user_data) -> dict:
-        expire_minutes = int(settings.ACCESS_TOKEN_EXPIRE_MINUTES or 60)
-        expire = datetime.now() + timedelta(minutes=expire_minutes)
-        to_encode = {
-            "sub": str(user_data["id"]),
-            "email": user_data["email"],
-            "role": user_data["role"],
-            "tenant_id": user_data["tenant_id"],
-            "exp": expire,
-        }
-        return jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGOTITHM)
 
     def _handle_expired_session(self):
         self.logout()
