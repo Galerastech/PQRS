@@ -25,16 +25,15 @@ class AuthService:
         self._load_session()
 
     async def login(self, username: str, password: str) -> Tuple[bool, str]:
-        # -> dict:
         """
-        Realiza el login del usuario y giarda la session
+        Realiza el login del usuario y guarda la sesión
         """
         try:
             payload = {"username": username, "password": password}
             response = await self._make_request("POST", "/auth/login", data=payload)
-            print(response)
+
             if not response:
-                return False, "Error en la conexion con del servidor"
+                return False, "Error en la conexión con el servidor"
 
             if response.get("access_token"):
                 print("Token: ", response.get("access_token"))
@@ -43,14 +42,18 @@ class AuthService:
                     self.SECRET_KEY,
                     algorithms=[self.ALGORITHM],
                 )
-                session_data = token_data
+
+                session_data = {
+                    "token": response.get("access_token"),
+                    "role": token_data.get("role"),
+                }
                 await self._save_to_storage(session_data)
-                return True, "Inicio de session exitoso"
+                return True, "Inicio de sesión exitoso"
             else:
                 return False, response.get("detail")
         except Exception as ex:
             print(f"An error occurred: {str(ex)}")
-            return False, "Error en la conexion con del servidor"
+            return False, "Error en la conexión con el servidor"
 
     async def logout(self) -> None:
         """
@@ -58,12 +61,8 @@ class AuthService:
         """
         self.page.session.clear()
         self._delete_stored_session()
-        await self.page.session.remove("session_data")
 
-    async def _make_request(
-        self, method: str, endpoint: str, **kwargs
-    ) -> Optional[dict]:
-        """Helper to handle HTTP requests."""
+    async def _make_request(self, method: str, endpoint: str, **kwargs) -> Optional[dict]:
         url = f"{self.API_URL}{endpoint}"
         try:
             async with httpx.AsyncClient(timeout=30) as client:
@@ -81,7 +80,7 @@ class AuthService:
 
     async def _save_to_storage(self, data: dict):
         """
-        Guarda la session en el storage
+        Guarda la sesión en el almacenamiento
         """
         await self.page.session.set("session_data", json.dumps(data))
 
@@ -92,17 +91,18 @@ class AuthService:
             role = session_data.get("role")
             try:
                 return UserRole(role)
-            except Exception as ex:
-                print(f"Error getting user role: {role} - {str(ex)}")
+            except ValueError as ve:
+                print(f"Invalid user role: {role} - {ve}")
                 return None
         return None
 
     def is_authenticated(self) -> bool:
-        token = self.page.session.get("token")
-        if not token:
+        session_data = self.page.session.get("session_data")
+        if not session_data:
             return False
         try:
-            jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            session_data = json.loads(session_data)
+            jwt.decode(session_data.get("token"), self.SECRET_KEY, algorithms=[self.ALGORITHM])
             return True
         except jwt.ExpiredSignatureError:
             self._handle_expired_session()
@@ -147,7 +147,8 @@ class AuthService:
             self._delete_stored_session()
 
     def _delete_stored_session(self):
-        self.page.session.remove("session_data")
+        if "session_data" in self.page.session:
+            self.page.session.remove("session_data")
 
     def _handle_expired_session(self):
         self.logout()

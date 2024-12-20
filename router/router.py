@@ -1,6 +1,8 @@
 import flet as ft
 from typing import Dict, Any, Callable
 from dataclasses import dataclass
+
+from middlewares.auth_middleware import require_auth
 from .routes import get_routes
 from services.auth_service import AuthService, UserRole
 
@@ -22,8 +24,8 @@ class Router:
         self.page.on_route_change = self.handle_route_change
         self.setup_routes()
 
-        # Iniciar en la ruta principal
-        self.page.go("/login")
+        # Verificar la sesión al iniciar
+        self.page.on_load = self.check_session
 
     def setup_routes(self):
         """
@@ -49,7 +51,7 @@ class Router:
         try:
             route = self.page.route
             if route in self.routes:
-                self.navigate_to_route(route)
+                self.navigate_to_route(e.route)
             else:
                 self.show_404()
         except Exception as ex:
@@ -61,10 +63,15 @@ class Router:
         """
         # Limpiar la página actual
         self.page.controls.clear()
+        self.page.update()
 
-        route_info = self.routes[route]
+        route_info = self.routes.get(route)
 
         try:
+            # Verificar autenticación y rol
+            if not route_info.layout:
+                require_auth(role=route_info.layout)(lambda: None)()
+
             # Crear la vista
             view = route_info.view()
 
@@ -150,7 +157,7 @@ class Router:
         """
         return self.page.route
 
-    def check_session(self):
+    async def check_session(self, e=None):
         """
         Verifica si hay una sesión activa
         """
@@ -163,4 +170,4 @@ class Router:
             elif user_role == UserRole.RESIDENT:
                 self.page.go("/dashboard")
         else:
-            self.page.go("/dashboard")
+            self.page.go("/login")

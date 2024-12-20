@@ -48,6 +48,8 @@ def main(page: ft.Page):
 
     Router(page)
 
+    page.go("/login")  # Navega a la página de login al iniciar
+
     page.update()
 
 
