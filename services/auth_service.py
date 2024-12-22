@@ -32,28 +32,20 @@ class AuthService:
             payload = {"username": username, "password": password}
             response = await self._make_request("POST", "/auth/login", data=payload)
 
-            if not response:
-                return False, "Error en la conexión con el servidor"
-
-            if response.get("access_token"):
-                print("Token: ", response.get("access_token"))
-                token_data = jwt.decode(
-                    response.get("access_token"),
-                    self.SECRET_KEY,
-                    algorithms=[self.ALGORITHM],
-                )
-
-                session_data = {
-                    "token": response.get("access_token"),
-                    "role": token_data.get("role"),
-                }
-                await self._save_to_storage(session_data)
-                return True, "Inicio de sesión exitoso"
-            else:
+            if response.status_code != 200:
                 return False, response.get("detail")
+
+            data = response.json()
+            # {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidGVuYW50X2lkIjpudWxsLCJyb2xlIjoic3VwZXJhZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzM0ODE0MzE2fQ.Sh_aCUPAGiVkThPfbiwzpblnBqee0lYicd8HUNPvCkI', 'token_type': 'bearer', 'expires_in': 60}
+
+            session_data = {
+                "access_token": data.get("access_token"),
+            }
+            self._save_to_storage(session_data)
+            return True, "Inicio de sesión exitoso"
         except Exception as ex:
             print(f"An error occurred: {str(ex)}")
-            return False, "Error en la conexión con el servidor"
+            return False, "Credenciales incorrectas, verifica nuevamente..."
 
     async def logout(self) -> None:
         """
@@ -62,39 +54,48 @@ class AuthService:
         self.page.session.clear()
         self._delete_stored_session()
 
-    async def _make_request(self, method: str, endpoint: str, **kwargs) -> Optional[dict]:
+    async def _make_request(
+        self, method: str, endpoint: str, **kwargs
+    ) -> Optional[Dict]:
         url = f"{self.API_URL}{endpoint}"
         try:
             async with httpx.AsyncClient(timeout=30) as client:
                 response = await client.request(method, url, **kwargs)
                 response.raise_for_status()
-                return response.json()
+                return response
         except httpx.HTTPStatusError as e:
             print(
                 f"Request failed with status code {e.response.status_code}: {e.response.text}"
             )
-            return response.json().get("detail")
         except Exception as e:
             print(f"An error occurred: {str(e)}")
-            return None
 
-    async def _save_to_storage(self, data: dict):
+    def _save_to_storage(self, data: dict):
         """
         Guarda la sesión en el almacenamiento
         """
-        await self.page.session.set("session_data", json.dumps(data))
+        self.page.session.set("session_data", json.dumps(data))
 
     def get_user_role(self) -> Optional[UserRole]:
-        session_data = self.page.session.get("session_data")
-        if session_data:
-            session_data = json.loads(session_data)
-            role = session_data.get("role")
-            try:
-                return UserRole(role)
-            except ValueError as ve:
-                print(f"Invalid user role: {role} - {ve}")
+        try:
+            #Get session data as a strin and parse JSON
+            session_data = self.page.session.get('session_data')
+            if not session_data:
                 return None
-        return None
+            
+            #parse JSON string to dict
+            session_dict = json.loads(session_data)
+            token = session_dict.get('access_token')
+
+            if not token:
+                return None
+            
+            #decode token to get user role
+            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            return UserRole(payload.get('role'))
+        
+        except (json.JSONDecodeError, jwt.InvalidTokenError, ValueError) as e :
+            print(f"Error getting user role: {str(e)}")
 
     def is_authenticated(self) -> bool:
         session_data = self.page.session.get("session_data")
@@ -102,7 +103,9 @@ class AuthService:
             return False
         try:
             session_data = json.loads(session_data)
-            jwt.decode(session_data.get("token"), self.SECRET_KEY, algorithms=[self.ALGORITHM])
+            jwt.decode(
+                session_data.get("token"), self.SECRET_KEY, algorithms=[self.ALGORITHM]
+            )
             return True
         except jwt.ExpiredSignatureError:
             self._handle_expired_session()

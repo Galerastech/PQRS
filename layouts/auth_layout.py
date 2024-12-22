@@ -25,7 +25,7 @@ class AuthLayout(BaseLayout):
             controls=[
                 ft.Card(
                     col={"lg": 8},
-                    color=ft.colors.PRIMARY_CONTAINER,
+                    color=ft.colors.WHITE,
                     content=ft.Row(
                         controls=[self.image, self.content],
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,

@@ -12,8 +12,9 @@ class LoginView(BaseView):
         self.email_field = ft.TextField(
             label="Email",
             label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=ft.colors.BLACK,
             width=300,
+            text_style=ft.TextStyle(color=ft.colors.BLACK),
             content_padding=10,
             autofocus=True,
             keyboard_type=ft.KeyboardType.EMAIL,
@@ -22,8 +23,9 @@ class LoginView(BaseView):
         self.password_field = ft.TextField(
             label="Contraseña",
             content_padding=10,
+            text_style=ft.TextStyle(color=ft.colors.BLACK),
             label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=ft.colors.BLACK,
             password=True,
             can_reveal_password=True,
             width=300,
@@ -35,6 +37,7 @@ class LoginView(BaseView):
                 ft.Text(
                     "Iniciar Sesión",
                     size=32,
+                    color=ft.colors.BLACK,
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER,
                 ),
@@ -42,7 +45,7 @@ class LoginView(BaseView):
                 self.password_field,
                 ft.ElevatedButton(
                     text="Iniciar sesión",
-                    bgcolor="#673ab7",
+                    bgcolor=ft.colors.BLACK,
                     style=ft.ButtonStyle(
                         color=ft.colors.DEEP_PURPLE_500,
                         shape=ft.RoundedRectangleBorder(radius=10),
@@ -63,7 +66,7 @@ class LoginView(BaseView):
                             ft.Text("Iniciar sesión con Google"),
                         ]
                     ),
-                    color=ft.colors.BLACK,
+                    color=ft.colors.WHITE,
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                     width=300,
                     height=40,
@@ -98,4 +101,4 @@ class LoginView(BaseView):
             else:
                 self.show_error(message)
         except Exception as e:
-            print(e)
+            print(str({"error": str(e)}))
