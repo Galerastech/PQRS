@@ -19,11 +19,11 @@ class MainLayout(BaseLayout):
                         ft.PopupMenuItem(text="Item 1"),
                         ft.PopupMenuItem(),  # divider
                         ft.PopupMenuItem(
-                            text="Checked item",
+                            text="Cerrar sesión",
                             checked=False,
-                            on_click='',
+                            on_click=self.handle_logout,
                         ),
-                    ]
+                    ],
                 ),
             ],
         )
@@ -39,7 +39,8 @@ class MainLayout(BaseLayout):
             )
         )
 
-    def handle_logout(self, _):
+    async def handle_logout(self, _):
+        
         # Implementar lógica de logout
-        self.page.auth_service.logout()
+        await self.page.auth_service.logout()
         self.page.go("/login")
