@@ -1,6 +1,6 @@
 import flet as ft
 
-from layouts.base_layout import BaseLayout
+from src.layouts.base_layout import BaseLayout
 
 
 class AuthLayout(BaseLayout):

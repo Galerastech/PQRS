@@ -13,12 +13,12 @@ from config import settings
 
 router = APIRouter(prefix="/auth")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 auth_service = AuthService()
 
 
-@router.post("/login", response_model=TokenSchema)
+@router.post("/token", response_model=TokenSchema)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),

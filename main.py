@@ -1,7 +1,9 @@
 import flet as ft
 
-from router import Router
-from services import AuthService
+from src.services import AuthClient
+from src.router import AppRouter
+
+from src.views.error import ErrorView
 
 
 def main(page: ft.Page):
@@ -44,14 +46,7 @@ def main(page: ft.Page):
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
 
-    page.auth_service = AuthService(page)
-
-    Router(page)
-
-    page.go("/login")  # Navega a la página de login al iniciar
-
-    page.update()
-
+    AppRouter(page,AuthClient())
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets", port=8000)

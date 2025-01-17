@@ -1,5 +1,6 @@
-from views.base_view import BaseView
 import flet as ft
+
+from src.views import BaseView
 
 
 class SuperAdminView(BaseView):
