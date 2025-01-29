@@ -6,14 +6,13 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from backend.models import Tenant
 from backend.schemas import TenantLoginSchema
-from backend.services import TenantService
 
 router = APIRouter()
 
-tenant_service = TenantService()
 
 
 
 @router.get('/tenants', response_model=List[TenantLoginSchema])
 async def list_tenants(db: Session = Depends(get_db)):
-    return tenant_service.get_tenants(db)
+    tenants = db.query(Tenant).all()
+    return tenants
