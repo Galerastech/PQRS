@@ -18,7 +18,7 @@ class Tenant(Base):
 
 
 class UserRole(str,enum.Enum):
-    resident = 'residente'
+    resident = 'resident'
     admin = 'administrator'
     superadmin = 'superadministrator'
 

@@ -23,6 +23,7 @@ class UserSchema(BaseModel):
     name: str
     email: EmailStr
     phone: Optional[str]
+    status: str
     apartment: int
     role: str
 
