@@ -11,7 +11,8 @@ class Registro_contratos_Form(ft.UserControl):
             #label="Tipo de Id",
             hint_text="Modalidad",
             options=[
-                ft.dropdown.Option("Arrendamiento"),
+                #todo: colocar keys en todos los dropdown
+                ft.dropdown.Option(key="Arrendamiento", text="Arrendamiento"),
                 ft.dropdown.Option("Licenciamiento"),
                 ft.dropdown.Option("Venta"),
                 ft.dropdown.Option("Servicio"),
@@ -144,7 +145,7 @@ class Registro_contratos_Form(ft.UserControl):
                         
                     ),
                     self.update_files_function,
-                    ft.Container(height=0),
+                    #ft.Container(height=0),
                     ft.ElevatedButton(
                     text="Guardar",
                     width=400,
@@ -162,10 +163,11 @@ class Registro_contratos_Form(ft.UserControl):
                             text="control de clientes?",
                             style=ft.TextStyle(color=ft.colors.DEEP_PURPLE_500, weight=ft.FontWeight.BOLD),
                             #todo: add function for on_click=lambda e: self.page.go("/register")
+                            
                         )
                     ],
                 ),
-                    ft.Container(height=0, margin=5)
+                    #ft.Container(height=0, margin=5)
                 ],
                 
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -174,5 +176,6 @@ class Registro_contratos_Form(ft.UserControl):
             ),
             bgcolor=ft.colors.GREY_200,
             width=500,
+            height=900,
             
         )

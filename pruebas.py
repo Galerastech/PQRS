@@ -11,6 +11,7 @@ from pages.residentes_pages.seguimiento_page import Seguimiento_Peticiones
 
 def main(page: ft.Page):
     page.title = "contador de prueba"
+    #page.current_locale = "es"
     page.scroll = "auto"
     page.alignment = "center"
     page.theme_mode  = "LIGHT"
@@ -20,7 +21,10 @@ def main(page: ft.Page):
             #Registro_clientesForm()
             #Registro_contratos_Form()
             #Users_dataTable()
-            Seguimiento_Peticiones()
+            #Seguimiento_Peticiones()
+            #MenuPageResidente(page)
+            #Navbar_layout(page)
+            MenuPage(page)
         )
 
 ft.app(main)

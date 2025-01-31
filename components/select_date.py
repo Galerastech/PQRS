@@ -7,9 +7,8 @@ def seleccionar_date(etiqueta: str):
             super().__init__()
             self.datepicker = ft.DatePicker(
                 first_date=datetime.date(2024, 10, 1),
-                last_date=datetime.date(2028, 12, 1),
+                last_date=datetime.date(2028, 12, 31),
                 on_change=self.change_date,
-                
             )
 
             self.selected_date = ft.Text()
