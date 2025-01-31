@@ -16,7 +16,7 @@ class Formato_Menu(ft.UserControl):
             col=6,
             content=[
                 ft.Container(
-                        content=[self.usuarios]
+                        content=self.usuarios
                     ),
                 ]
             )
@@ -60,7 +60,9 @@ def create_card(inicial:str,titulo:str,descripcion:str,color_texto, color):
             padding=30,
             #expand= True,
             content=[
-                ft.Stack(
+                ft.Container(
+                    content=[
+                        ft.Stack(
                     controls=[
                         ft.Container(
                             content=ft.IconButton(ft.icons.RADIO_BUTTON_OFF,
@@ -81,6 +83,9 @@ def create_card(inicial:str,titulo:str,descripcion:str,color_texto, color):
                             )
                         ],
                     ),
+                    ]
+                )
+                
                 ],
                 
         )
