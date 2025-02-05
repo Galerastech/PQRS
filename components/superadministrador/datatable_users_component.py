@@ -15,7 +15,7 @@ class Users_dataTable(ft.UserControl):
         )
         
         self.data_table = ft.DataTable(
-            expand=True,
+            #expand=True,
             border= ft.border.all(2,color=ft.colors.DEEP_PURPLE_200),
             border_radius=10,
             column_spacing=30,
