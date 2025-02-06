@@ -1,4 +1,7 @@
+from typing import Optional, Callable
+
 import flet as ft
+
 
 class Formato_Menu(ft.UserControl):
     def __init__(self):
@@ -8,11 +11,11 @@ class Formato_Menu(ft.UserControl):
 
         self.usuarios = create_card("U", "USUARIOS",
                                     'Gestión de la base de datos de Usuarios que arriendan la app en modalidad de "software as a service"',
-                                    ft.colors.WHITE, "#094d3f", height=500,
+                                    ft.colors.WHITE, ft.colors.GREEN_800, height=500,
                                     on_hover=self.change_color)
 
         self.clientes = create_card("C", "CLIENTES", "Gestión de los Contratos suscritos con los usuarios",
-                                    ft.colors.WHITE, "#094d3f")
+                                    ft.colors.WHITE, ft.colors.GREEN_800)
 
         self.dashboard = create_card("D", "DASHBOARD", "Métricas de uso de la app por parte de los usuarios",
                                      ft.colors.BLACK, ft.colors.AMBER_500)
@@ -35,7 +38,10 @@ class Formato_Menu(ft.UserControl):
                     ft.Container(
                         content=self.clientes
                     ),
-                    ft.ResponsiveRow(
+                    ft.GridView(
+                        semantic_child_count=2,
+                        spacing=10,
+                        max_extent=425,
                         controls=[
                             ft.Container(
                                 content=self.dashboard
@@ -66,10 +72,10 @@ def change_color(e):
     e.control.update()
 
 
-def create_card(inicial: str, titulo: str, descripcion: str, color_texto, color, height= None,
+def create_card(inicial: str, titulo: str, descripcion: str, color_texto, color, height: Optional = None,
                 on_hover=None):
     return ft.Container(
-        on_click=on_hover,
+        on_hover=on_hover,
         alignment=ft.alignment.center,
         bgcolor=color,
         border_radius=10,
@@ -98,4 +104,5 @@ def create_card(inicial: str, titulo: str, descripcion: str, color_texto, color,
                 )
             ],
         ),
+
     )
