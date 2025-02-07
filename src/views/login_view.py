@@ -1,12 +1,22 @@
+from time import sleep
+
 import flet as ft
 
-from .base_view import BaseView
 
-
-class LoginView(BaseView):
+class LoginView(ft.Column):
     def __init__(self, page: ft.Page):
-        super().__init__(page)
+        super().__init__()
         self.page = page
+        self.page.on_resize = self.on_resize
+
+        self.image = ft.Image(
+            src="images/loginImage.jpg",
+            fit=ft.ImageFit.COVER,
+            expand=2,
+            width=768,
+            height=540,
+            border_radius=ft.border_radius.only(top_left=12, bottom_left=12),
+        )
 
         self.email_field = ft.TextField(
             label="Email",
@@ -30,8 +40,7 @@ class LoginView(BaseView):
             width=300,
         )
 
-    def build(self):
-        return ft.Column(
+        self.content = ft.Column(
             controls=[
                 ft.Text(
                     "Iniciar Sesión",
@@ -52,7 +61,7 @@ class LoginView(BaseView):
                     color=ft.colors.WHITE,
                     width=300,
                     height=40,
-                    on_click=self.handle_login,
+                    on_click='',
                 ),
                 ft.Container(
                     content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
@@ -78,3 +87,23 @@ class LoginView(BaseView):
             width=320,
         )
 
+        self.controls = [
+            ft.ResponsiveRow(
+                controls=[
+                    ft.Card(
+                        col={"lg": 8},
+                        color=ft.colors.WHITE,
+                        content=ft.Row(
+                            controls=[self.image, self.content],
+                        ),
+                        width=1200,
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+        ]
+
+    def on_resize(self, e):
+        self.image.visible = self.page.width >= 428
+        self.page.update()

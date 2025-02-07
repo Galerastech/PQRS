@@ -1,6 +1,7 @@
-from src.services import AuthClient
 from .routes import get_routes
 import flet as ft
+
+from ..services.auth import AuthClient
 
 
 class AppRouter:
@@ -9,24 +10,40 @@ class AppRouter:
         self.routes = get_routes(page)
         self.page = page
         self.set_default_navigation()
+        self.setup_routes()
 
     def set_default_navigation(self):
-        self.page.go('/login')
-
-    def check_session(self):
-        token = self.page.session.get('token')
-        if token:
-            return
-        if jwt
+        if not self.auth.is_authenticated(self.page):
+            self.page.go('/login')
+        else:
+            token = self.page.session.get('token')
+            role = self.auth.get_user_role(token)
+            if role == 'administrator':
+                self.page.go("/admin/dashboard")
+            elif role == 'superadmin':
+                self.page.go("/superadmin/dashboard")
+            elif role == 'resident':
+                self.page.go("/resident/dashboard")
+            else:
+                self.page.go('/login')
 
     def setup_routes(self):
-        route_configs = get_routes(self.page)
-        for route_path, route_info in route_configs.items():
-            self.register_router(
-                route_path, route_info.get("view"),route_info.get('layout')
-            )
+        def route_change(route):
+            self.page.views.clear()
 
-    def register_router(self, route_path, param, param1):
+            route_info = self.routes.get(route.route)
+            if route_info:
+                view = route_info.get('view')()
+                self.page.views.append(
+                    ft.View(
+                        route.route,
+                        [view],
+                        vertical_alignment=ft.MainAxisAlignment.CENTER,
+                    )
+                )
+            else:
+                self.page.go('/login')
+            self.page.update()
 
-
-
+        self.page.on_route_change = route_change
+        self.page.go(self.page.route)

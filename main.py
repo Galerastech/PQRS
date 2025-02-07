@@ -1,9 +1,7 @@
 import flet as ft
 
-from src.services import AuthClient
 from src.router import AppRouter
-
-from src.views.error import ErrorView
+from src.services.auth import AuthClient
 
 
 def main(page: ft.Page):
@@ -46,7 +44,11 @@ def main(page: ft.Page):
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
 
-    AppRouter(page,AuthClient())
+    auth = AuthClient(api_url="http://localhost:8001")
+
+    router = AppRouter(page, auth)
+
+    page.update()
 
 if __name__ == "__main__":
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets", port=8000)

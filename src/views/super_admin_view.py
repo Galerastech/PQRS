@@ -1,9 +1,8 @@
 import flet as ft
 
-from src.views import BaseView
 
 
-class SuperAdminView(BaseView):
+class SuperAdminView(ft.Control):
     def __init__(self, page: ft.Page):
         super().__init__(page)
         self.page = page

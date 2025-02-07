@@ -64,10 +64,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> Optional[UserSchema]:
-    if current_user.role not in ['resident', 'administrator', 'superadministrator']:
+    if current_user.role not in ['resident', 'administrator', 'superadmin']:
         raise HTTPException(status_code=400, detail="Rol de usuario no válido")
 
-    if current_user.status == 'inactivo':
+    if current_user.status == 'inactive':
         raise HTTPException(status_code=400, detail="Usuario inactivo")
 
     return current_user
+
