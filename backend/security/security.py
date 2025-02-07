@@ -70,5 +70,4 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     if current_user.status == 'inactive':
         raise HTTPException(status_code=400, detail="Usuario inactivo")
 
-    return current_user
-
+    return UserSchema.model_validate(current_user)
