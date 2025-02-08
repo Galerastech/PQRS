@@ -33,15 +33,16 @@ clientes = [
     }
 ]
 
+from turtle import color
 import flet as ft
 
-class Tabla_Clientes(ft.UserControl):
+class Tabla_Contratos(ft.UserControl):
     def __init__(self, page: ft.Page = None):
         super().__init__()
 
         self.page = page
 
-        self.tabla_clientes = ft.DataTable(
+        self.tabla_contratos = ft.DataTable(
                 #expand=True,
                 border= ft.border.all(2, color = "#094d3f"),
                 border_radius=10,
@@ -121,7 +122,7 @@ class Tabla_Clientes(ft.UserControl):
                     ft.ResponsiveRow(
                         adaptive=True,
                         controls=[
-                            self.tabla_clientes
+                            self.tabla_contratos
                             ]
                     )
                 ]
@@ -129,10 +130,10 @@ class Tabla_Clientes(ft.UserControl):
         )
 
     def show_data(self):
-        self.tabla_clientes.rows= []
+        self.tabla_contratos.rows= []
         for cliente in clientes:
             numero_id = cliente["numero_identificacion"]
-            self.tabla_clientes.rows.append(
+            self.tabla_contratos.rows.append(
                 ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text(cliente["numero_identificacion"])),
@@ -160,20 +161,19 @@ class Tabla_Clientes(ft.UserControl):
 
             for key, value in cliente.items():
                 print(f"columna 1 {key}, columna 2 {value}")
-                if key != "contrato":
-                    self.tabla_detalles.rows.append(
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text(f"{key.replace('_', ' ').title()}")),
-                                ft.DataCell(ft.Text(value)),
-                            ]
+                if key == "contrato" and isinstance(value, dict):
+                    for contract_key, contract_value in value.items():
+                        self.tabla_detalles.rows.append(
+                            ft.DataRow(
+                                cells=[
+                                    ft.DataCell(ft.Text(f"{contract_key.replace('_', ' ').title()}")),
+                                    ft.DataCell(ft.Text(str(contract_value))),
+                                ]
+                            )
                         )
-                    )
-
-
-        self.page.dialog = self.dlg_modal
-        self.dlg_modal.open = True
-        self.page.update()
+            self.page.dialog = self.dlg_modal
+            self.dlg_modal.open = True
+            self.page.update()
 
     def close_dialog(self, _):
         self.dlg_modal.open = False

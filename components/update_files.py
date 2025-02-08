@@ -16,16 +16,19 @@ def update_files_function(nombre_boton: str):
                         controls= [
                             ft.ElevatedButton(
                             nombre_boton,
-                            color= ft.colors.BLACK,
-                            icon_color= ft.colors.DEEP_PURPLE_500,
-                            bgcolor= ft.colors.DEEP_PURPLE_100,
+                            color= ft.colors.WHITE,
+                            icon_color= ft.colors.WHITE,
+                            bgcolor= "#094d3f",
+                            width=200,
+                            height=50,
                             icon=ft.icons.UPLOAD_FILE,
+                            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                             on_click=pick_files,
                             ),
                             self.selected_files,
                             ]
                         ),
-                    margin= ft.margin.only(50,0,0,0)
+                    #margin= ft.margin.only(0,5,0,0)
                 )
             ]
 

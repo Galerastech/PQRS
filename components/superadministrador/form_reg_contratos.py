@@ -1,181 +1,83 @@
 import flet as ft
 from flet_core import TextStyle
-from components.select_date import seleccionar_date
-from components.update_files import update_files_function
+from .Contratos.formulario_contratos import Form_reg_contrato
+from .Contratos.tabla_contratos import Tabla_Contratos
 
 class Registro_contratos_Form(ft.UserControl):
-    def __init__(self):
+    def __init__(self, page: ft.Page = None):
         super().__init__()
-              
-        self.modality = ft.Dropdown(
-            #label="Tipo de Id",
-            hint_text="Modalidad",
-            options=[
-                #todo: colocar keys en todos los dropdown
-                ft.dropdown.Option(key="Arrendamiento", text="Arrendamiento"),
-                ft.dropdown.Option("Licenciamiento"),
-                ft.dropdown.Option("Venta"),
-                ft.dropdown.Option("Servicio"),
-            ], 
-            autofocus= True,
-            width=195,
-            border= ft.border.all(0.2, ft.colors.DEEP_PURPLE_500),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            #bgcolor=ft.colors.DEEP_PURPLE_500
-            
-        )
-        
-        self.status = ft.Dropdown(
-            #label="Tipo de Id",
-            hint_text="Estado",
-            options=[
-                ft.dropdown.Option("Activo"),
-                ft.dropdown.Option("Suspendido"),
-                ft.dropdown.Option("Finalizado"),
-                ft.dropdown.Option("Pendiente"),
-            ], 
-            autofocus= True,
-            width=195,
-            border= ft.border.all(0.2, ft.colors.DEEP_PURPLE_500),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            #bgcolor=ft.colors.DEEP_PURPLE_500
-            
-        )
-        
-        self.payment_method = ft.Dropdown(
-            #label="Tipo de Id",
-            hint_text="Metodo de pago",
-            options=[
-                ft.dropdown.Option("PSE"),
-                ft.dropdown.Option("Efectivo"),
-                ft.dropdown.Option("Nequi"),
-                ft.dropdown.Option("Daviplata"),
-                ft.dropdown.Option("Transferencia")
-            ], 
-            autofocus= True,
-            width=242,
-            border= ft.border.all(0.2, ft.colors.DEEP_PURPLE_500),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            #bgcolor=ft.colors.DEEP_PURPLE_500   
-        )
-        
-        self.identificacion = ft.TextField(
-            label="Identificacion",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=400,
-            autofocus=True,
-            input_filter=ft.NumbersOnlyInputFilter(),
-        )
-        
-        self.contacto = ft.TextField(
-            label="Nombre del Contacto o responsable",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=400,
-            autofocus=True
-        )
-        
-        self.nom_conjunto = ft.TextField(
-            label="Nombre Conjunto ",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=400,
-            autofocus=True
-        )
-               
-        self.telefono = ft.TextField(
-            label="telefono",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=400,
-            autofocus=True,
-            input_filter=ft.NumbersOnlyInputFilter(),
-        )  
-        
-        self.start_date = seleccionar_date("Fecha Inicial")
-        
-        self.end_date = seleccionar_date("Fecha Final")
-        
-        self.update_files_function = update_files_function("Cargar Contrato")
-        
-        self.error_text = ft.Text(
-            color=ft.colors.RED_400,
-            size=12,
-            text_align=ft.TextAlign.CENTER
-        )      
-        
+        self.page = page
+        self.current_view = "1"
+
+        self.formulario = Form_reg_contrato()
+        self.table = Tabla_Contratos(self.page)    
+
+        self.formulario.visible = True
+        self.table.visible = False
+
+        self.btn_registrar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Registrar/Actualizar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "1" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "1"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
+        self.btn_consultar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Consultar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "2" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "2"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
     def build(self):
         return ft.Container(
             content=ft.Column(
                 controls=[
+                    ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
+                        color=ft.colors.BLACK45, text_align=ft.TextAlign.CENTER),
                     ft.Text(
                     "Registro Contratos",
                     size=32,
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
-                    self.identificacion,
-                    self.nom_conjunto,
-                    self.contacto,
-                    self.telefono,
-                    ft.Row(
-                        controls=[
-                            self.modality,
-                            self.status,
-                        ],
-                        alignment= ft.MainAxisAlignment.CENTER,
-                        
-                    ),
-                    ft.Row(
-                        controls=[
-                            ft.Column(
-                                controls=[
-                                    self.start_date,
-                                    self.end_date
-                                ],
-                                spacing=0,
-                                alignment= ft.MainAxisAlignment.CENTER,
-                                horizontal_alignment= ft.CrossAxisAlignment.CENTER
-                                
-                                ),
-                            self.payment_method,    
+                ft.Container(height=10),
+                ft.Container(
+                    content = ft.Row(
+                        controls = [
+                            self.btn_registrar,
+                            self.btn_consultar
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
-                        
-                    ),
-                    self.update_files_function,
-                    #ft.Container(height=0),
-                    ft.ElevatedButton(
-                    text="Guardar",
-                    width=400,
-                    height=50,
-                    bgcolor='#673ab7',
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    #todo: add function for on_click=,
-                    color=ft.colors.WHITE
+                        spacing=-3, 
+                    )
                 ),
-                    ft.Text(
-                    '¿Quieres ir al ',
-                    color=ft.colors.DEEP_PURPLE_500,
-                    spans=[
-                        ft.TextSpan(
-                            text="control de clientes?",
-                            style=ft.TextStyle(color=ft.colors.DEEP_PURPLE_500, weight=ft.FontWeight.BOLD),
-                            #todo: add function for on_click=lambda e: self.page.go("/register")
-                            
-                        )
-                    ],
-                ),
-                    #ft.Container(height=0, margin=5)
+                ft.Container(height=20),
+                ft.Stack(
+                     controls=[
+                        self.formulario,
+                        self.table
+                        ]
+                )
                 ],
-                
-                alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20,
             ),
             bgcolor=ft.colors.GREY_200,
-            width=500,
-            height=900,
-            
-        )
+            width="100%",
+            padding=10, 
+            )
+
+    def on_change(self,e, view):
+        self.current_view = view
+
+        self.btn_registrar.bgcolor = "#094d3f" if self.current_view == "1" else ft.colors.GREY_400
+        self.btn_consultar.bgcolor = "#094d3f" if self.current_view == "2" else ft.colors.GREY_400
+        
+        self.formulario.visible = (view == "1")
+        self.table.visible = (view == "2")
+
+        self.update()

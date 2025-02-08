@@ -16,11 +16,12 @@ def seleccionar_date(etiqueta: str):
             # Botón para abrir el DatePicker
             self.button = ft.ElevatedButton(
                 etiqueta,
-                color= ft.colors.BLACK,
-                icon_color= ft.colors.DEEP_PURPLE_500,
-                bgcolor= ft.colors.DEEP_PURPLE_100,
+                color= ft.colors.WHITE,
+                icon_color= ft.colors.WHITE,
+                bgcolor= "#094d3f",
                 icon=ft.icons.CALENDAR_MONTH,
                 on_click=self.open_date_picker,
+                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
             )
 
             self.controls = [self.button]

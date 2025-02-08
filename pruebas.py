@@ -2,7 +2,6 @@ import flet as ft
 from pages.SuperAdministrador.register_client_page import Registro_clientesForm
 from pages.SuperAdministrador.menu import MenuPage
 from pages.SuperAdministrador.registro_contratos_page import Registro_contratos_Form
-from pages.SuperAdministrador.table_users_page import Users_dataTable
 from pages.SuperAdministrador.carga_masiva_page import Carga_masiva_Form
 from pages.residentes_pages.menu_page import MenuPageResidente
 from layouts.navbar_layout import Navbar_layout
@@ -19,11 +18,13 @@ def main(page: ft.Page):
     page.theme_mode  = "LIGHT"
     page.vertical_alignment= ft.MainAxisAlignment.CENTER # alineamos 
     page.add(
-            #Carga_masiva_Form()
-            #Tabla_Clientes()
+            Carga_masiva_Form(page)
+            #Tabla_Clientes(page)
             #Form_reg_usuario(page)
-            Registro_clientesForm(page)
-            #Registro_contratos_Form()
+            #Ejemplo(page)
+            #formResidente_page(page)
+            #Registro_clientesForm(page)
+            #Registro_contratos_Form(page)
             #Users_dataTable()
             #Seguimiento_Peticiones()
             #MenuPageResidente(page)

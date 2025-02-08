@@ -1,100 +1,83 @@
 import flet as ft
 from flet_core import TextStyle
-from components.update_files import update_files_function
+from .carga_masiva.importar_archivos import Importar_Archivos
+from .carga_masiva.estructura_validar import Estructura_Validar
 
 class Carga_masiva_Form(ft.UserControl):
-    def __init__(self):
+    def __init__(self, page: ft.Page):
         super().__init__()
-              
-        
-        self.identificacion = ft.TextField(
-            label="Identificacion",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=200,
-            autofocus=True,
-            input_filter=ft.NumbersOnlyInputFilter(),
-        )
-                
-        self.nom_conjunto = ft.TextField(
-            label="Nombre Conjunto ",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
-            width=300,
-            autofocus=True
-        )
-        
-        
-        self.update_files_function = update_files_function("Cargar Excel")
-        
-        self.error_text = ft.Text(
-            color=ft.colors.RED_400,
-            size=12,
-            text_align=ft.TextAlign.CENTER
-        )      
-        
+        self.page = page
+        self.current_view = "1"
+
+        self.formulario1 = Estructura_Validar()
+        self.formulario2 = Importar_Archivos()
+
+        self.formulario1.visible = True
+        self.formulario2.visible = False
+
+        self.btn_registrar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Estructura/Validar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "1" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "1"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
+        self.btn_consultar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Importar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "2" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "2"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
     def build(self):
         return ft.Container(
             content=ft.Column(
                 controls=[
+                    ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
+                        color=ft.colors.BLACK45, text_align=ft.TextAlign.CENTER),
                     ft.Text(
-                    "CARGA DE RESIDENTES",
+                    "Administracion de bases de Residentes",
                     size=32,
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
-                    ft.Text(
-                        "Verifique el NIT y el nombre del conjunto residencial antes de cargar los datos",
-                        size=14,
-                        text_align=ft.TextAlign.CENTER
-                        ),
-                    ft.Row(
-                        alignment = ft.MainAxisAlignment.CENTER,
-                        controls=[
-                    self.identificacion,
-                    self.nom_conjunto,
-                        ]
-                    ),
-                    ft.Container(height=0),
-                    ft.Row(
-                        controls=[
-                            self.update_files_function,
-                            ft.Container(
-                            content = ft.Column(
-                                controls= [
-                                    ft.ElevatedButton(
-                                    "Descargar Modelo",
-                                    color= ft.colors.BLACK,
-                                    icon_color= ft.colors.DEEP_PURPLE_500,
-                                    bgcolor= ft.colors.DEEP_PURPLE_100,
-                                    icon=ft.icons.DOWNLOAD_OUTLINED,
-                                    # on_click=pick_files,
-                                    ),
-                                    
-                                    ]
-                                ),
-                            margin= ft.margin.only(bottom=30)
-                            )
-                            
+                ft.Container(height=10),
+                ft.Container(
+                    content = ft.Row(
+                        controls = [
+                            self.btn_registrar,
+                            self.btn_consultar
                         ],
-                        alignment= ft.MainAxisAlignment.CENTER
-                    ),
-                    ft.ElevatedButton(
-                    text="Guardar",
-                    width=400,
-                    height=50,
-                    bgcolor='#673ab7',
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    #todo: add function for on_click=,
-                    color=ft.colors.WHITE
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=-3, 
+                    )
                 ),
-                    ft.Container(height=0, margin=10),
+                ft.Container(height=20),
+                ft.Stack(
+                     controls=[
+                        self.formulario1,
+                        self.formulario2
+                        ]
+                )
                 ],
-                
-                alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20,
             ),
             bgcolor=ft.colors.GREY_200,
-            width=600,            
-        )
+            width="100%",
+            padding=10, 
+            )
+
+    def on_change(self,e, view):
+        self.current_view = view
+
+        self.btn_registrar.bgcolor = "#094d3f" if self.current_view == "1" else ft.colors.GREY_400
+        self.btn_consultar.bgcolor = "#094d3f" if self.current_view == "2" else ft.colors.GREY_400
+        
+        self.formulario1.visible = (view == "1")
+        self.formulario2.visible = (view == "2")
+
+        self.update()

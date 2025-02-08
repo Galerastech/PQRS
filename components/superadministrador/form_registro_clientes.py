@@ -1,5 +1,4 @@
 import flet as ft
-from .datatable_users_component import Users_dataTable
 from .form_reg_usuario import Form_reg_usuario
 from .tabla_clientes import Tabla_Clientes
 
@@ -14,6 +13,24 @@ class Registro_clientesForm(ft.UserControl):
 
         self.formulario.visible = True
         self.table.visible = False
+
+        self.btn_registrar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Registrar/Actualizar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "1" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "1"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
+        self.btn_consultar = ft.ElevatedButton(
+                                color = ft.colors.WHITE,
+                                text="Consultar",
+                                width=200,
+                                bgcolor="#094d3f" if self.current_view == "2" else ft.colors.GREY_400,
+                                on_click=lambda e: self.on_change(e, "2"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
 
     def build(self):
         return ft.Container(
@@ -31,22 +48,8 @@ class Registro_clientesForm(ft.UserControl):
                 ft.Container(
                     content = ft.Row(
                         controls = [
-                            ft.ElevatedButton(
-                                color = ft.colors.WHITE,
-                                text="Registrar/Actualizar",
-                                width=200,
-                                bgcolor="#094d3f" if self.current_view == "1" else ft.colors.GREY_400,
-                                on_click=lambda e: self.on_change(e, "1"),
-                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                            ),
-                            ft.ElevatedButton(
-                                color = ft.colors.WHITE,
-                                text="Consultar",
-                                width=200,
-                                bgcolor="#094d3f" if self.current_view == "2" else ft.colors.GREY_400,
-                                on_click=lambda e: self.on_change(e, "2"),
-                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                            ),
+                            self.btn_registrar,
+                            self.btn_consultar
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=-3, 
@@ -70,6 +73,9 @@ class Registro_clientesForm(ft.UserControl):
     def on_change(self,e, view):
         self.current_view = view
 
+        self.btn_registrar.bgcolor = "#094d3f" if self.current_view == "1" else ft.colors.GREY_400
+        self.btn_consultar.bgcolor = "#094d3f" if self.current_view == "2" else ft.colors.GREY_400
+        
         self.formulario.visible = (view == "1")
         self.table.visible = (view == "2")
 
