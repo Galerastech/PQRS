@@ -30,3 +30,22 @@ peticiones = [
         "respuesta": "El área de mantenimiento ha sido notificada y el problema será atendido en 48 horas."
     }
 ]
+
+
+normas_convivencia = {
+    1: "Mantener un volumen moderado en televisores, radios y otros dispositivos de sonido, especialmente entre las 10:00 p.m. y las 7:00 a.m.",
+    2: "Respetar los espacios comunes y evitar bloquear pasillos, escaleras o accesos con objetos personales.",
+    3: "Depositar la basura en los puntos designados y seguir el horario de recolección establecido.",
+    4: "Mantener el orden y la limpieza en zonas comunes como jardines, piscinas y parques infantiles.",
+    5: "No realizar actividades que generen daños a la infraestructura del conjunto residencial.",
+    6: "Cumplir con las normas establecidas para el uso de parqueaderos y respetar los espacios asignados.",
+    7: "Controlar a las mascotas, asegurando que no causen molestias a otros residentes y recogiendo sus desechos.",
+    8: "No realizar reparaciones o actividades ruidosas en las unidades habitacionales fuera del horario permitido.",
+    9: "Respetar a los vecinos y al personal del conjunto, evitando conflictos y lenguaje ofensivo.",
+    10: "Notificar a la administración sobre cualquier anomalía o situación que afecte la seguridad del conjunto.",
+    11: "Hacer uso adecuado de las instalaciones deportivas y recreativas, respetando los horarios establecidos.",
+    12: "No permitir el acceso a personas ajenas al conjunto sin autorización previa.",
+    13: "Cumplir con las normas de seguridad en ascensores y otras instalaciones de uso común.",
+    14: "Participar en las reuniones de copropietarios y respetar las decisiones tomadas en asambleas.",
+    15: "Mantener al día los pagos de administración y otras cuotas establecidas por la comunidad."
+}

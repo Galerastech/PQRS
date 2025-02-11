@@ -1,5 +1,6 @@
 import datetime
 import flet as ft
+from styles.text_colors import color as colores
 
 def seleccionar_date(etiqueta: str):
     class Fecha(ft.UserControl):
@@ -16,9 +17,9 @@ def seleccionar_date(etiqueta: str):
             # Botón para abrir el DatePicker
             self.button = ft.ElevatedButton(
                 etiqueta,
-                color= ft.colors.WHITE,
-                icon_color= ft.colors.WHITE,
-                bgcolor= "#094d3f",
+                color= colores.PRIMARY.value,
+                icon_color= colores.PRIMARY.value,
+                bgcolor= colores.SECONDARY.value,
                 icon=ft.icons.CALENDAR_MONTH,
                 on_click=self.open_date_picker,
                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),

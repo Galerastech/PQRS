@@ -12,6 +12,8 @@ from components.superadministrador.form_reg_usuario import Form_reg_usuario
 from components.residente_components.registro_pqrs.form_registro import Form_reg_pqrs
 from components.residente_components.menu_residente import Formato_Menu_residentes
 from components.residente_components.seguimiento.tabla_peticiones import Tabla_Peticiones
+from components.residente_components.historico.selec_fechas import RangoFechas
+
 def main(page: ft.Page):
     page.title = "contador de prueba"
     #page.current_locale = "es"
@@ -21,7 +23,8 @@ def main(page: ft.Page):
     page.vertical_alignment= ft.MainAxisAlignment.CENTER # alineamos 
     page.add(
             #Formato_Menu_residentes()
-            Tabla_Peticiones(page)
+            RangoFechas(page)
+            #Tabla_Peticiones(page)
             #Form_reg_pqrs()
             #Carga_masiva_Form(page)
             #Tabla_Clientes(page)

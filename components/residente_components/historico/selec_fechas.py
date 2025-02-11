@@ -1,13 +1,26 @@
-from ..ejemplo_peticiones import peticiones
-
-from turtle import color
 import flet as ft
+from components.select_date import seleccionar_date
+from components.residente_components.ejemplo_peticiones import peticiones
 from styles.text_colors import color as colores
 
-class Tabla_Peticiones(ft.UserControl):
+
+class RangoFechas(ft.UserControl):
     def __init__(self, page: ft.Page):
         super().__init__()
+
         self.page = page
+
+        self.fecha_inicial = seleccionar_date("Fecha Inicial")
+        self.fecha_final = seleccionar_date("Fecha Final")
+
+        self.fecha_inicial_valor = ft.Text(
+            value=self.fecha_inicial.selected_date.value,
+            color=colores.DEFAULT.value,
+        )
+        self.fecha_final_valor = ft.Text(
+            value=self.fecha_final.selected_date.value,
+            color=colores.DEFAULT.value,
+        )
 
         self.tabla_peticiones = ft.DataTable(
             #expand=True,
@@ -21,7 +34,6 @@ class Tabla_Peticiones(ft.UserControl):
                 ft.DataColumn(ft.Text("+OPC", weight="bold")),
             ]
         )
-
         self.show_data()
 
         self.form_fecha_detalles = ft.TextField(
@@ -45,24 +57,12 @@ class Tabla_Peticiones(ft.UserControl):
             autofocus=True
         )
 
-        self.form_respuesta_detalles = ft.TextField(
-            label="Respuesta",
-            value = "",
-            read_only=True,
-            label_style=ft.TextStyle(color=colores.DEFAULT.value),
-            border_color=colores.DEFAULT.value,
-            multiline=True,
-            width=400,
-            autofocus=True
-        )
-
         self.dlg_modal = ft.AlertDialog(
             modal=True,
             content= ft.Column(
                 controls=[
                     self.form_fecha_detalles,
                     self.form_descripcion_detalles,
-                    self.form_respuesta_detalles,
                 ],
                 spacing=10,
                 scroll="auto",
@@ -91,47 +91,48 @@ class Tabla_Peticiones(ft.UserControl):
             actions_alignment=ft.MainAxisAlignment.END,
         )
 
-        self.show_data()
-
     def build(self):
-        return ft.Container(
-            border_radius=10,
-            content=ft.Column(
-                #expand=True,
-                scroll="auto",
-                controls=[
-                    ft.ResponsiveRow(
-                        adaptive=True,
-                        controls=[
-                            self.tabla_peticiones
-                            ]
-                    )
-                ]
-            ),
+        return ft.Column(
+            controls=[
+                ft.Row(
+                    controls=[
+                        self.fecha_inicial,
+                        self.fecha_final,
+                    ], 
+                    alignment=ft.MainAxisAlignment.CENTER
+                ),
+                ft.Text(f"Ha seleccionado {self.fecha_inicial.selected_date.value} a {self.fecha_final.selected_date.value}"),
+                self.tabla_peticiones
+            ],
+            spacing=10,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
+        self.update()
 
     def show_data(self):
-        self.tabla_peticiones.rows= []
-        for peticion in peticiones:
-            numero_id = peticion["numero_radicacion"]
-            self.tabla_peticiones.rows.append(
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(peticion["numero_radicacion"])),
-                        ft.DataCell(ft.Text(peticion["fecha_radicacion"])),
-                        ft.DataCell(ft.Text(peticion["descripcion"])),
-                        ft.DataCell(ft.IconButton(
-                            ft.icons.SEARCH, 
-                            icon_size=20,
-                            icon_color=colores.SECONDARY.value,
-                            data = numero_id,
-                            on_click=lambda e: self.open_dialog(e)
+            self.tabla_peticiones.rows= []
+            for peticion in peticiones:
+                numero_id = peticion["numero_radicacion"]
+                self.tabla_peticiones.rows.append(
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(peticion["numero_radicacion"])),
+                            ft.DataCell(ft.Text(peticion["fecha_radicacion"])),
+                            ft.DataCell(ft.Text(peticion["descripcion"])),
+                            ft.DataCell(ft.IconButton(
+                                ft.icons.SEARCH, 
+                                icon_size=20,
+                                icon_color=colores.SECONDARY.value,
+                                data = numero_id,
+                                on_click=lambda e: self.open_dialog(e)
+                                ),
                             ),
-                        ),
-                    ]
-                )
-            ),
-        self.update()
+                        ]
+                    )
+                ),
+            self.update()
+
 
     def open_dialog(self, e):
         peticion_id = e.control.data
@@ -141,7 +142,6 @@ class Tabla_Peticiones(ft.UserControl):
         if peticion:
             self.form_fecha_detalles.value = peticion["fecha_radicacion"]
             self.form_descripcion_detalles.value = peticion["descripcion"]
-            self.form_respuesta_detalles.value = peticion["respuesta"]
 
             self.page.dialog = self.dlg_modal
             self.dlg_modal.open = True
