@@ -34,6 +34,8 @@ clientes = [
 ]
 
 import flet as ft
+from styles.text_colors import color as colores
+
 
 class Tabla_Clientes(ft.UserControl):
     def __init__(self, page: ft.Page = None):
@@ -43,7 +45,7 @@ class Tabla_Clientes(ft.UserControl):
 
         self.tabla_clientes = ft.DataTable(
                 #expand=True,
-                border= ft.border.all(2, color = "#094d3f"),
+                border= ft.border.all(2, color = colores.SECONDARY.value),
                 border_radius=10,
                 column_spacing=30,
                 columns=[
@@ -56,7 +58,7 @@ class Tabla_Clientes(ft.UserControl):
         self.show_data()
 
         self.tabla_detalles = ft.DataTable(
-                     border= ft.border.all(2, color = "#094d3f"),
+                     border= ft.border.all(2, color = colores.SECONDARY.value),
                      border_radius=10,
                      column_spacing=30,
                      columns=[
@@ -68,9 +70,9 @@ class Tabla_Clientes(ft.UserControl):
         self.estados = ft.RadioGroup(
             value="A",
             content=ft.Row([
-                ft.Radio(value="A", label="Activo", active_color="#094d3f"),
-                ft.Radio(value="I", label="Inactivar", active_color="#094d3f"),
-                ft.Radio(value="AC", label="Actualizar", active_color="#094d3f")
+                ft.Radio(value="A", label="Activo", active_color=colores.SECONDARY.value),
+                ft.Radio(value="I", label="Inactivar", active_color=colores.SECONDARY.value),
+                ft.Radio(value="AC", label="Actualizar", active_color=colores.SECONDARY.value)
             ]
             )
         )
@@ -91,8 +93,8 @@ class Tabla_Clientes(ft.UserControl):
                     text="Guardar",
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=10),
-                        bgcolor="#094d3f",
-                        color=ft.colors.WHITE
+                        bgcolor=colores.SECONDARY.value,
+                        color=colores.PRIMARY.value
                     ),
                     #on_click=lambda e: self.guardar_datos(e),
                 ),
@@ -100,8 +102,8 @@ class Tabla_Clientes(ft.UserControl):
                     text="Cerrar",
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=10),
-                        bgcolor="#094d3f",
-                        color=ft.colors.WHITE
+                        bgcolor=colores.SECONDARY.value,
+                        color=colores.PRIMARY.value
                     ),
                     on_click=lambda e: self.close_dialog(e),
                 )
@@ -140,7 +142,7 @@ class Tabla_Clientes(ft.UserControl):
                         ft.DataCell(ft.IconButton(
                             ft.icons.SEARCH, 
                             icon_size=20,
-                            icon_color="#094d3f",
+                            icon_color=colores.SECONDARY.value,
                             data = numero_id,
                             on_click=lambda e: self.open_dialog(e)
                             ),

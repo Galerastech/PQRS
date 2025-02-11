@@ -1,5 +1,7 @@
 import flet as ft
 from components.update_files import update_files_function
+from styles.text_colors import color as colores
+
 
 resultado = {
     "Total_Registros_a_Importar": 1800,
@@ -14,8 +16,8 @@ class Importar_Archivos(ft.UserControl):
 
         self.identificacion = ft.TextField(
                 label="Identificacion",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True,
                 input_filter=ft.NumbersOnlyInputFilter(),
@@ -23,8 +25,8 @@ class Importar_Archivos(ft.UserControl):
 
         self.nom_conjunto = ft.TextField(
                 label="Nombre Conjunto ",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True
             )
@@ -46,9 +48,9 @@ class Importar_Archivos(ft.UserControl):
                         text="Importar Archivo",
                         width=400,
                         height=50,
-                        bgcolor="#094d3f",
+                        bgcolor=colores.SECONDARY.value,
                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                        color=ft.colors.WHITE,
+                        color=colores.PRIMARY.value,
                         on_click=lambda e: self.open_dialog(e)
                     )
 
@@ -59,7 +61,7 @@ class Importar_Archivos(ft.UserControl):
             )
 
         self.tabla_detalles = ft.DataTable(
-                border= ft.border.all(2, color = "#094d3f"),
+                border= ft.border.all(2, color = colores.SECONDARY.value),
                 border_radius=10,
                 column_spacing=30,
                 columns=[
@@ -83,8 +85,8 @@ class Importar_Archivos(ft.UserControl):
                     text="Guardar",
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=10),
-                        bgcolor="#094d3f",
-                        color=ft.colors.WHITE
+                        bgcolor=colores.SECONDARY.value,
+                        color=colores.PRIMARY.value
                     ),
                     #on_click=lambda e: self.guardar_datos(e),
                 ),
@@ -92,8 +94,8 @@ class Importar_Archivos(ft.UserControl):
                     text="Cerrar",
                     style=ft.ButtonStyle(
                         shape=ft.RoundedRectangleBorder(radius=10),
-                        bgcolor="#094d3f",
-                        color=ft.colors.WHITE
+                        bgcolor=colores.SECONDARY.value,
+                        color=colores.PRIMARY.value
                     ),
                     on_click=lambda e: self.close_dialog(e),
                 )

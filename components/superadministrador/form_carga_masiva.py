@@ -2,6 +2,7 @@ import flet as ft
 from flet_core import TextStyle
 from .carga_masiva.importar_archivos import Importar_Archivos
 from .carga_masiva.estructura_validar import Estructura_Validar
+from styles.text_colors import color as colores 
 
 class Carga_masiva_Form(ft.UserControl):
     def __init__(self, page: ft.Page):
@@ -16,19 +17,19 @@ class Carga_masiva_Form(ft.UserControl):
         self.formulario2.visible = False
 
         self.btn_registrar = ft.ElevatedButton(
-                                color = ft.colors.WHITE,
+                                color = colores.PRIMARY.value,
                                 text="Estructura/Validar",
                                 width=200,
-                                bgcolor="#094d3f" if self.current_view == "1" else ft.colors.GREY_400,
+                                bgcolor= colores.SECONDARY.value if self.current_view == "1" else colores.BLOCKCOLOR.value,
                                 on_click=lambda e: self.on_change(e, "1"),
                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                             )
 
         self.btn_consultar = ft.ElevatedButton(
-                                color = ft.colors.WHITE,
+                                color = colores.PRIMARY.value,
                                 text="Importar",
                                 width=200,
-                                bgcolor="#094d3f" if self.current_view == "2" else ft.colors.GREY_400,
+                                bgcolor= colores.SECONDARY.value if self.current_view == "2" else colores.BLOCKCOLOR.value,
                                 on_click=lambda e: self.on_change(e, "2"),
                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                             )
@@ -38,7 +39,7 @@ class Carga_masiva_Form(ft.UserControl):
             content=ft.Column(
                 controls=[
                     ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
-                        color=ft.colors.BLACK45, text_align=ft.TextAlign.CENTER),
+                        color= colores.DEFAULT.value, text_align=ft.TextAlign.CENTER),
                     ft.Text(
                     "Administracion de bases de Residentes",
                     size=32,
@@ -66,7 +67,7 @@ class Carga_masiva_Form(ft.UserControl):
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=colores.BLOCKCOLOR.value,
             width="100%",
             padding=10, 
             )
@@ -74,8 +75,8 @@ class Carga_masiva_Form(ft.UserControl):
     def on_change(self,e, view):
         self.current_view = view
 
-        self.btn_registrar.bgcolor = "#094d3f" if self.current_view == "1" else ft.colors.GREY_400
-        self.btn_consultar.bgcolor = "#094d3f" if self.current_view == "2" else ft.colors.GREY_400
+        self.btn_registrar.bgcolor =  colores.SECONDARY.value if self.current_view == "1" else colores.BLOCKCOLOR.value
+        self.btn_consultar.bgcolor =  colores.SECONDARY.value if self.current_view == "2" else colores.BLOCKCOLOR.value
         
         self.formulario1.visible = (view == "1")
         self.formulario2.visible = (view == "2")

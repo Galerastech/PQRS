@@ -1,176 +1,110 @@
 import flet as ft
+from styles.text_colors import color as colores
+from typing import Optional, Callable
+
 
 class Formato_Menu_residentes(ft.UserControl):
     def __init__(self):
         super().__init__()
-        
-        self.peticiones = ft.Container(
+
+        self.change_color = change_color
+
+        self.peticion = create_card("P", "PETICION",
+                                    'Requerimiento formal y respetuoso dirigido a la administración',
+                                    colores.PRIMARY.value, colores.SECONDARY.value, height=500,
+                                    on_hover=self.change_color)
+
+        self.queja = create_card("Q", "QUEJA", "Inconformidad que involucra otro(s) residente(s)",
+                                    colores.PRIMARY.value, colores.SECONDARY.value)
+
+        self.reclamo = create_card("R", "RECLAMO", "Inconformidad dirigida a la administración",
+                                     colores.CONTENT.value, colores.MENU_SECOND.value)
+
+        self.sugerencia = create_card("S", "SUGERENCIA", "Aporte constructivo para la mejora o o felicitaciones para la administración", colores.CONTENT.value,
+                                 colores.MENU_SECOND.value)
+
+        self.contenedor1 = ft.Container(
+            col=6,
+            content=
+            ft.Container(
+                content=self.peticion
+            ),
+        )
+
+        self.contenedor2 = ft.Container(
+            col=6,
             content=ft.Column(
                 controls=[
-                ft.IconButton(ft.icons.NAVIGATE_NEXT,
-                        icon_size= 35, 
-                        icon_color=ft.colors.BLACK,
-                        
-                        ),
-                ft.Container(
-                    content= ft.Icon(ft.icons.LIST_ALT,
-                        size=110,
-                        color= ft.colors.BLACK,
+                    ft.Container(
+                        content=self.queja
                     ),
-                    alignment= ft.alignment.center,
-                    width="100%",
-                    height="100%",
-                ),
-                ft.Container(height="20"),
-                ft.Text("PETICIÓN",
-                        size=20,
-                        weight=ft.FontWeight.BOLD,
-                        text_align= ft.TextAlign.LEFT
-                        ),
-                ft.Text("Son solicitudes formales que se hacen a una entidad para que realice alguna acción o gestione un trámite."),
-            ],
-                spacing=0
-            ),
-                width=550,
-                height=300,
-                margin=5,
-                padding=30,
-                bgcolor=ft.colors.DEEP_PURPLE_500,
-                border_radius=1
-        )
-        
-        self.quejas = ft.Container(
-            content=ft.Column(
-                controls=[
-                    
-                ft.IconButton(ft.icons.NAVIGATE_NEXT,
-                        icon_size= 35, 
-                        icon_color=ft.colors.BLACK,
-                        ),
-                ft.Container(
-                    content= ft.Icon(ft.icons.REPORT_OUTLINED,
-                                     size=110,
-                                     color= ft.colors.BLACK
-                                     ),
-                    alignment = ft.alignment.center,
-                    width = "100%",
-                    height = "100%",
-                ),
-                ft.Container(height="20"),
-                ft.Text("QUEJAS",
-                        size=20,
-                        weight=ft.FontWeight.BOLD,
-                        text_align= ft.TextAlign.LEFT
-                        ),
-                ft.Text("Expresan el descontento de una persona frente a un servicio o producto que no cumple con lo esperado."),
-            ],
-                spacing=0
-            ),
-                width=650,
-                height=300,
-                margin=5,
-                padding=30,
-                bgcolor=ft.colors.DEEP_PURPLE_500,
-                border_radius=1
-        )
-        
-        self.reclamos = ft.Container(
-            content= ft.Column(
-                controls=[
-                ft.IconButton(ft.icons.NAVIGATE_NEXT,
-                            icon_size= 35, 
-                            icon_color=ft.colors.BLACK,
-                            ),
-                ft.Container(
-                    content=ft.Icon(ft.icons.CONTROL_CAMERA,
-                        size=110,
-                        color= ft.colors.BLACK,
-                        ),
-                    alignment= ft.alignment.center,
-                    width="100%",
-                    height="100%",
-                ),                
-                ft.Container(height="20"),
-                ft.Text("RECLAMOS",
-                        size=20,
-                        weight=ft.FontWeight.BOLD,
-                        text_align= ft.TextAlign.LEFT
-                        ),
-                ft.Text("Son solicitudes formales para que se corrija una situación que causa un perjuicio o daño."),
-            ],
-                spacing=0
-            ),
-                width=650,
-                height=300,
-                margin=5,
-                padding=30,
-                bgcolor=ft.colors.DEEP_PURPLE_500,
-                border_radius=1
-        )
-        
-        self.sugerencias = ft.Container(
-            content=ft.Column(
-                controls=[
-                ft.IconButton(ft.icons.NAVIGATE_NEXT,
-                        icon_size= 35, 
-                        icon_color=ft.colors.BLACK,
-                        ),
-                ft.Container(
-                    content=ft.Icon(ft.icons.LIGHTBULB_CIRCLE_OUTLINED,
-                        size=110,
-                        color= ft.colors.BLACK,
-                        ),
-                    alignment= ft.alignment.center,
-                    width="100%",
-                    height="100%",
-                ),
-                
-                ft.Container(height="20"),
-                ft.Text("SUGERENCIAS",
-                        size=20,
-                        weight=ft.FontWeight.BOLD,
-                        text_align= ft.TextAlign.LEFT
-                        ),
-                ft.Text("Son propuestas para mejorar un servicio o producto"),
-            ],
-                spacing=0
-            ),
-                width=550,
-                height=300,
-                margin=5,
-                padding=30,
-                bgcolor=ft.colors.DEEP_PURPLE_500,
-                border_radius=1
-        )
-        
-    def build(self):
-        return ft.Container(
-            content= ft.Column(
-                controls= [
-                    ft.Text("MENU",
-                            size=32,
-                            weight=ft.FontWeight.BOLD,
-                            text_align=ft.TextAlign.CENTER),
-                    ft.Row(
-                        controls= [
-                            self.peticiones,
-                            self.quejas
-                        ],
-                    ),
-                    ft.Row(
+                    ft.GridView(
+                        semantic_child_count=2,
+                        spacing=10,
+                        max_extent=425,
                         controls=[
-                            self.reclamos,
-                            self.sugerencias
+                            ft.Container(
+                                content=self.reclamo
+                            ),
+                            ft.Container(
+                                content=self.sugerencia
+                            ),
                         ]
                     )
-                ],           
-                
-                alignment= ft.MainAxisAlignment.CENTER,
-                horizontal_alignment= ft.CrossAxisAlignment.CENTER,
-            ),
-         width="100%",
-         height="100%",
-         alignment=ft.alignment.center,
-         padding=ft.Padding(10, 10, 10, 10),
-            
+                ]
+            )
+
         )
+
+    def build(self):
+        return ft.ResponsiveRow(
+            controls=[
+                ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
+                        color=colores.DEFAULT.value, text_align="center"),
+                ft.Text("NOMBRE DEL CONDOMINIO", size= 25, weight=ft.FontWeight.BOLD,
+                        color=colores.DEFAULT.value, text_align="center"),
+                self.contenedor1,
+                self.contenedor2
+            ]
+        )
+
+
+def change_color(e): #TODO: QUITAR FUNCION Y AGREGAR LA NAVEGACION
+    e.control.bgcolor = ft.colors.RED if e.data == "true" else colores.SECONDARY.value
+    e.control.update()
+
+
+def create_card(inicial: str, titulo: str, descripcion: str, color_texto, color, height: Optional = None,
+                on_hover=None):
+    return ft.Container(
+        on_hover=on_hover,
+        alignment=ft.alignment.center,
+        bgcolor=color,
+        border_radius=10,
+        padding=30,
+        # expand= True,
+        content=
+        ft.Stack(
+            controls=[
+                ft.Container(
+                    height=height,
+                    content=ft.IconButton(ft.icons.RADIO_BUTTON_OFF,
+                                          icon_size=35,
+                                          icon_color=colores.PRIMARY.value),
+                    alignment=ft.alignment.top_right,
+                    margin=0
+                ),
+                ft.Column(
+                    controls=[
+                        ft.Text(inicial, size=100, weight=ft.FontWeight.BOLD, color=color_texto),
+                        ft.Text(titulo, size=20, weight=ft.FontWeight.BOLD, color=color_texto),
+                        ft.Text(descripcion, size=15, weight=ft.FontWeight.NORMAL, color=color_texto),
+                    ],
+                    spacing=10,
+                    alignment=ft.MainAxisAlignment.SPACE_EVENLY,
+                    horizontal_alignment=ft.CrossAxisAlignment.START
+                )
+            ],
+        ),
+
+    )

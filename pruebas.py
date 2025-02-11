@@ -9,7 +9,9 @@ from pages.residentes_pages.peticiones_page import formResidente_page
 from pages.residentes_pages.seguimiento_page import Seguimiento_Peticiones
 from components.superadministrador.tabla_clientes import Tabla_Clientes
 from components.superadministrador.form_reg_usuario import Form_reg_usuario
-
+from components.residente_components.registro_pqrs.form_registro import Form_reg_pqrs
+from components.residente_components.menu_residente import Formato_Menu_residentes
+from components.residente_components.seguimiento.tabla_peticiones import Tabla_Peticiones
 def main(page: ft.Page):
     page.title = "contador de prueba"
     #page.current_locale = "es"
@@ -18,7 +20,10 @@ def main(page: ft.Page):
     page.theme_mode  = "LIGHT"
     page.vertical_alignment= ft.MainAxisAlignment.CENTER # alineamos 
     page.add(
-            Carga_masiva_Form(page)
+            #Formato_Menu_residentes()
+            Tabla_Peticiones(page)
+            #Form_reg_pqrs()
+            #Carga_masiva_Form(page)
             #Tabla_Clientes(page)
             #Form_reg_usuario(page)
             #Ejemplo(page)

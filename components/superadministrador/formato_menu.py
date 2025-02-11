@@ -1,4 +1,5 @@
 from typing import Optional, Callable
+from styles.text_colors import color as colores
 
 import flet as ft
 
@@ -11,17 +12,17 @@ class Formato_Menu(ft.UserControl):
 
         self.usuarios = create_card("U", "USUARIOS",
                                     'Gestión de la base de datos de Usuarios que arriendan la app en modalidad de "software as a service"',
-                                    ft.colors.WHITE, ft.colors.GREEN_800, height=500,
+                                    colores.PRIMARY.value, colores.SECONDARY.value, height=500,
                                     on_hover=self.change_color)
 
         self.clientes = create_card("C", "CLIENTES", "Gestión de los Contratos suscritos con los usuarios",
-                                    ft.colors.WHITE, ft.colors.GREEN_800)
+                                    colores.PRIMARY.value, colores.SECONDARY.value)
 
         self.dashboard = create_card("D", "DASHBOARD", "Métricas de uso de la app por parte de los usuarios",
-                                     ft.colors.BLACK, ft.colors.AMBER_500)
+                                     colores.CONTENT.value, colores.MENU_SECOND.value)
 
-        self.tools = create_card("T", "TOOLS", "Caja de herramientas para la gestión de la app", ft.colors.BLACK,
-                                 ft.colors.AMBER_500)
+        self.tools = create_card("T", "TOOLS", "Caja de herramientas para la gestión de la app", colores.CONTENT.value,
+                                 colores.MENU_SECOND.value)
 
         self.contenedor1 = ft.Container(
             col=6,
@@ -60,15 +61,15 @@ class Formato_Menu(ft.UserControl):
         return ft.ResponsiveRow(
             controls=[
                 ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
-                        color=ft.colors.BLACK45, text_align="center"),
+                        color=colores.DEFAULT.value, text_align="center"),
                 self.contenedor1,
                 self.contenedor2
             ]
         )
 
 
-def change_color(e):
-    e.control.bgcolor = ft.colors.RED if e.data == "true" else ft.colors.GREEN_800
+def change_color(e): #TODO: QUITAR FUNCION Y AGREGAR LA NAVEGACION
+    e.control.bgcolor = ft.colors.RED if e.data == "true" else colores.SECONDARY.value
     e.control.update()
 
 
@@ -88,7 +89,7 @@ def create_card(inicial: str, titulo: str, descripcion: str, color_texto, color,
                     height=height,
                     content=ft.IconButton(ft.icons.RADIO_BUTTON_OFF,
                                           icon_size=35,
-                                          icon_color=ft.colors.WHITE),
+                                          icon_color=colores.PRIMARY.value),
                     alignment=ft.alignment.top_right,
                     margin=0
                 ),

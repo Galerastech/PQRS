@@ -2,6 +2,7 @@ import flet as ft
 from flet_core import TextStyle
 from components.select_date import seleccionar_date
 from components.update_files import update_files_function
+from styles.text_colors import color as colores
 from datetime import datetime
 
 
@@ -19,14 +20,14 @@ class Radicar_Peticion_Form(ft.UserControl):
             ], 
             autofocus= True,
             width=195,
-            border= ft.border.all(0.2, ft.colors.DEEP_PURPLE_500),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border= ft.border.all(0.2, colores.SECONDARY.value),
+            border_color=colores.SECONDARY.value,
         )
                
         self.descripcion_peticion = ft.TextField(
             label="Deposita aqui tu petición",
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            label_style=TextStyle(color=colores.DEFAULT.value),
+            border_color=colores.SECONDARY.value,
             width=400,
             #height=400,
             multiline=True,

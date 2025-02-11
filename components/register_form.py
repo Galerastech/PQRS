@@ -3,6 +3,7 @@ from flet_core import TextSpan, TextStyle
 
 from services import AuthService
 
+from styles.text_colors import color as colores
 
 class RegisterForm:
     def __init__(self, page: ft.Page):
@@ -12,27 +13,27 @@ class RegisterForm:
         self.username_field = ft.TextField(
             label="Usuario",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500
+            border_color=colores.SECONDARY.value
         )
         self.password_field = ft.TextField(
             label="Contraseña",
             width=300,
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            label_style=TextStyle(color=colores.DEFAULT.value),
+            border_color=colores.SECONDARY.value,
             password=True,
             can_reveal_password=True
         )
         self.confirm_password_field = ft.TextField(
             label="Confirmar Contraseña",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=colores.SECONDARY.value,
             password=True,
             can_reveal_password=True
         )
         self.email_field = ft.TextField(
             label="Email",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=colores.SECONDARY.value,
         )
         self.alert = ft.AlertDialog()
 
@@ -52,18 +53,18 @@ class RegisterForm:
                     text="Crear cuenta",
                     width=300,
                     height=50,
-                    color=ft.colors.WHITE,
-                    bgcolor="#673ab7",
+                    color=colores.PRIMARY.value,
+                    bgcolor=colores.SECONDARY.value,
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                     on_click=self.handle_register
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
-                        color=ft.colors.DEEP_PURPLE_500,
+                        color=colores.SECONDARY.value,
                         spans=[TextSpan(
                             "Iniciar Sesion",
                             style=ft.TextStyle(
                                 weight=ft.FontWeight.BOLD,
-                                color=ft.colors.DEEP_PURPLE_500
+                                color=colores.SECONDARY.value
                             ),
                             on_click=lambda _: self.page.go("/login")
                         )
@@ -122,27 +123,27 @@ class RegisterForm(ft.UserControl):
         self.username_field = ft.TextField(
             label="Usuario",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500
+            border_color=colores.SECONDARY.value
         )
         self.password_field = ft.TextField(
             label="Contraseña",
             width=300,
-            label_style=TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            label_style=TextStyle(color=colores.DEFAULT.value),
+            border_color=colores.SECONDARY.value,
             password=True,
             can_reveal_password=True
         )
         self.confirm_password_field = ft.TextField(
             label="Confirmar Contraseña",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=colores.SECONDARY.value,
             password=True,
             can_reveal_password=True
         )
         self.email_field = ft.TextField(
             label="Email",
             width=300,
-            border_color=ft.colors.DEEP_PURPLE_500,
+            border_color=colores.SECONDARY.value,
         )
         self.error_text = ft.Text(
             color=ft.colors.RED_400,
@@ -189,18 +190,18 @@ class RegisterForm(ft.UserControl):
                     text="Crear cuenta",
                     width=300,
                     height=50,
-                    color=ft.colors.WHITE,
-                    bgcolor="#673ab7",
+                    color=colores.PRIMARY.value,
+                    bgcolor=colores.SECONDARY.value,
                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
                     on_click=self.handle_register
                 ),
                 ft.Text('¿Ya tienes una cuenta? ',
-                        color=ft.colors.DEEP_PURPLE_500,
+                        color=colores.SECONDARY.value,
                         spans=[TextSpan(
                             "Iniciar Sesion",
                             style=ft.TextStyle(
                                 weight=ft.FontWeight.BOLD,
-                                color=ft.colors.DEEP_PURPLE_500), )
+                                color=colores.SECONDARY.value), )
                         ]
                         )
             ],

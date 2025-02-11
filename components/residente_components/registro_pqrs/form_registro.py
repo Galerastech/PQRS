@@ -1,37 +1,35 @@
 import flet as ft
+from datetime import datetime
 from ...select_date import seleccionar_date
 from styles.text_colors import color as colores
 
-class Form_reg_contrato(ft.UserControl):
+
+class Form_reg_pqrs(ft.UserControl):
     def __init__(self):
         super().__init__()
 
-        self.fecha_inicio = seleccionar_date("Fecha Inicio")
-        self.fecha_finalizacion = seleccionar_date("Fecha Finalizacion")
+        self.peticion = ft.Text(
+            #TODO: Crear funcion para traer el nombre desde el menu
+            value= "PETICION",
+            color= colores.DEFAULT.value
+            
+        )
 
+        self.fecha_radicacion = datetime.now()
+
+        self.fecha_inicio = ft.Text(
+            value= self.fecha_radicacion.strftime("%d-%m-%y"),
+            color= colores.DEFAULT.value
+        )
+        
         self.modalidad = ft.Dropdown(
                 #label="",
-                hint_text="Modalidad",
+                hint_text="Tipo de petición",
                 options=[
-                    ft.dropdown.Option("Anual"),
-                    ft.dropdown.Option("Mensual"),
-                    ft.dropdown.Option("Trimestral")
-                ], 
-                autofocus= True,
-                width=400,
-                border= ft.border.all(0.2, colores.DEFAULT.value),
-                border_color=colores.DEFAULT.value,
-                #bgcolor=ft.colors.DEEP_PURPLE_500
-            )
-        
-        self.pago_seleccion = ft.Dropdown(
-                #label="Tipo de Id",
-                hint_text="Forma de pago",
-                options=[
-                    ft.dropdown.Option("Anual"),
-                    ft.dropdown.Option("Mensual"),
-                    ft.dropdown.Option("Trimestral"),
-                    ft.dropdown.Option("Semestral")
+                    ft.dropdown.Option("PETICION"),
+                    ft.dropdown.Option("QUEJA"),
+                    ft.dropdown.Option("RECLAMO"),
+                    ft.dropdown.Option("SUGERENCIA")
                 ], 
                 autofocus= True,
                 width=400,
@@ -40,31 +38,15 @@ class Form_reg_contrato(ft.UserControl):
                 #bgcolor=ft.colors.DEEP_PURPLE_500
             )
             
-        self.identificacion = ft.TextField(
-                label="Identificacion",
+        self.descripcion = ft.TextField(
+                label="Descripcion",
                 label_style=ft.TextStyle(color=colores.DEFAULT.value),
                 border_color=colores.DEFAULT.value,
+                multiline=True,
                 width=400,
-                autofocus=True,
-                input_filter=ft.NumbersOnlyInputFilter(),
-            )
-            
-        self.cliente = ft.TextField(
-                label="Nombre del Cliente",
-                label_style=ft.TextStyle(color=colores.DEFAULT.value),
-                border_color=colores.DEFAULT.value,
-                width=400,
+                height=300,
                 autofocus=True
             )
-
-        self.pago_residente = ft.TextField(
-                label="telefono",
-                label_style=ft.TextStyle(color=colores.DEFAULT.value),
-                border_color=colores.DEFAULT.value,
-                width=400,
-                autofocus=True,
-                input_filter=ft.NumbersOnlyInputFilter(),
-            )  
             
         self.error_text = ft.Text(
                 color=ft.colors.RED_400,
@@ -74,21 +56,18 @@ class Form_reg_contrato(ft.UserControl):
 
         self.formulario = ft.Column(
                     controls=[
-                        self.identificacion,            
-                        self.cliente,
                         ft.Row(
                             controls=[
+                                self.peticion,
                                 self.fecha_inicio,
-                                self.fecha_finalizacion,
                             ],
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         self.modalidad,
-                        self.pago_seleccion,
-                        self.pago_residente,
+                        self.descripcion,
                         ft.Container(height=0),
                         ft.ElevatedButton(
-                        text="Guardar",
+                        text="Radicar",
                         width=400,
                         height=50,
                         bgcolor=colores.SECONDARY.value,
@@ -101,7 +80,7 @@ class Form_reg_contrato(ft.UserControl):
                         color=colores.SECONDARY.value,
                         spans=[
                             ft.TextSpan(
-                                text="detalle de contratos?",
+                                text="detalle de peticiones?",
                                 style=ft.TextStyle(color=colores.SECONDARY.value, weight=ft.FontWeight.BOLD),
                                 #TODO: add function for on_click=lambda e: self.page.go("/register")
                             )

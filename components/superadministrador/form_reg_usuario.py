@@ -1,5 +1,5 @@
 import flet as ft
-
+from styles.text_colors import color as colores
 
 class Form_reg_usuario(ft.UserControl):
     def __init__(self):
@@ -15,15 +15,15 @@ class Form_reg_usuario(ft.UserControl):
                 ], 
                 autofocus= True,
                 width=150,
-                border= ft.border.all(0.2, ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                border= ft.border.all(0.2, colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 #bgcolor=ft.colors.DEEP_PURPLE_500
             )
             
         self.identificacion = ft.TextField(
                 label="Identificacion",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=240,
                 autofocus=True,
                 input_filter=ft.NumbersOnlyInputFilter(),
@@ -31,32 +31,32 @@ class Form_reg_usuario(ft.UserControl):
             
         self.cliente = ft.TextField(
                 label="Nombre del Cliente",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True
             )
             
         self.nom_administrador = ft.TextField(
                 label="Nombre administrador ",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True
             )
             
         self.email = ft.TextField(
                 label="Email",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True
             )
 
         self.telefono = ft.TextField(
                 label="telefono",
-                label_style=ft.TextStyle(color=ft.colors.BLACK45),
-                border_color=ft.colors.BLACK45,
+                label_style=ft.TextStyle(color=colores.DEFAULT.value),
+                border_color=colores.DEFAULT.value,
                 width=400,
                 autofocus=True,
                 input_filter=ft.NumbersOnlyInputFilter(),
@@ -86,18 +86,18 @@ class Form_reg_usuario(ft.UserControl):
                         text="Guardar",
                         width=400,
                         height=50,
-                        bgcolor="#094d3f",
+                        bgcolor= colores.SECONDARY.value,
                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                         #todo: add function for on_click=,
-                        color=ft.colors.WHITE
+                        color=colores.PRIMARY.value
                     ),
                         ft.Text(
                         '¿Quieres ir al ',
-                        color="#094d3f",
+                        color= colores.SECONDARY.value,
                         spans=[
                             ft.TextSpan(
                                 text="listado de clientes?",
-                                style=ft.TextStyle(color="#094d3f", weight=ft.FontWeight.BOLD),
+                                style=ft.TextStyle(color= colores.SECONDARY.value, weight=ft.FontWeight.BOLD),
                                 #todo: add function for on_click=lambda e: self.page.go("/register")
                             )
                         ],

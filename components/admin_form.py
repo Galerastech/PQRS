@@ -1,6 +1,7 @@
 import flet as ft
 
 from services import AuthService
+from styles.text_colors import color as colores
 
 
 class AdminForm:
@@ -10,16 +11,16 @@ class AdminForm:
 
         self.email_field = ft.TextField(
             label="Email",
-            label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            label_style=ft.TextStyle(color=colores.DEFAULT.value),
+            border_color=colores.SECONDARY.value,
             width=300,
             autofocus=True
         )
 
         self.password_field = ft.TextField(
             label="Contraseña",
-            label_style=ft.TextStyle(color=ft.colors.BLACK),
-            border_color=ft.colors.DEEP_PURPLE_500,
+            label_style=ft.TextStyle(color=colores.DEFAULT.value),
+            border_color=colores.SECONDARY.value,
             password=True,
             can_reveal_password=True,
             width=300
@@ -43,10 +44,10 @@ class AdminForm:
                 self.error_text,
                 ft.ElevatedButton(
                     text="Iniciar sesión",
-                    bgcolor='#673ab7',
-                    style=ft.ButtonStyle(color=ft.colors.DEEP_PURPLE_500,
+                    bgcolor=colores.SECONDARY.value,
+                    style=ft.ButtonStyle(color=colores.SECONDARY.value,
                                          shape=ft.RoundedRectangleBorder(radius=10)),
-                    color=ft.colors.WHITE,
+                    color=colores.PRIMARY.value,
                     width=300,
                     height=50,
                     on_click=self.handle_login
