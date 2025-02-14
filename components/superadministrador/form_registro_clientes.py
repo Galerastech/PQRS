@@ -67,7 +67,7 @@ class Registro_clientesForm(ft.UserControl):
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            bgcolor=colores.BLOCKCOLOR.value,
+            bgcolor=colores.BACKGROUND.value,
             width="100%",
             padding=10, 
             )

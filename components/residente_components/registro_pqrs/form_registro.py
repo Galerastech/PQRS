@@ -1,12 +1,13 @@
 import flet as ft
 from datetime import datetime
-from ...select_date import seleccionar_date
 from styles.text_colors import color as colores
 
 
 class Form_reg_pqrs(ft.UserControl):
-    def __init__(self):
+    def __init__(self, page: ft.Page):
         super().__init__()
+
+        self.page = page
 
         self.peticion = ft.Text(
             #TODO: Crear funcion para traer el nombre desde el menu
@@ -44,7 +45,7 @@ class Form_reg_pqrs(ft.UserControl):
                 border_color=colores.DEFAULT.value,
                 multiline=True,
                 width=400,
-                height=300,
+                height=150,
                 autofocus=True
             )
             

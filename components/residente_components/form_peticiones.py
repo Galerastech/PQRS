@@ -1,107 +1,101 @@
 import flet as ft
 from flet_core import TextStyle
-from components.select_date import seleccionar_date
-from components.update_files import update_files_function
+from .seguimiento.tabla_peticiones import Tabla_Peticiones
+from .registro_pqrs.form_registro import Form_reg_pqrs
+from .historico.selec_fechas import RangoFechas
 from styles.text_colors import color as colores
 from datetime import datetime
 
 
 class Radicar_Peticion_Form(ft.UserControl):
-    def __init__(self):
+    def __init__(self, page: ft.Page):
         super().__init__()
-              
-        self.peticion = ft.Dropdown(
-            hint_text="Tipo PQRS",
-            options=[
-                ft.dropdown.Option("Petición"),
-                ft.dropdown.Option("Queja"),
-                ft.dropdown.Option("Reclamo"),
-                ft.dropdown.Option("Sugerencia"),
-            ], 
-            autofocus= True,
-            width=195,
-            border= ft.border.all(0.2, colores.SECONDARY.value),
-            border_color=colores.SECONDARY.value,
-        )
-               
-        self.descripcion_peticion = ft.TextField(
-            label="Deposita aqui tu petición",
-            label_style=TextStyle(color=colores.DEFAULT.value),
-            border_color=colores.SECONDARY.value,
-            width=400,
-            #height=400,
-            multiline=True,
-            autofocus=True,
-        )
+        self.page = page
+        self.current_view = "1"
         
-        # self.contacto = ft.TextField(
-        #     label="Petición",
-        #     label_style=TextStyle(color=ft.colors.BLACK),
-        #     border_color=ft.colors.DEEP_PURPLE_500,
-        #     width=400,
-        #     height=400,
-        #     autofocus=True
-        # )
-        
-        self.adjunto = update_files_function("Subir Adjuntos")
-        
-        self.fecha_actual = datetime.now().strftime("%Y-%m-%d")
-        
-        self.error_text = ft.Text(
-            color=ft.colors.RED_400,
-            size=12,
-            text_align=ft.TextAlign.CENTER
-        )      
-        
+        self.formulario = Form_reg_pqrs(page)
+        self.table = Tabla_Peticiones(page)
+        self.historico = RangoFechas(page)
+
+        self.formulario.visible = True
+        self.table.visible = False
+        self.historico.visible = False
+
+        self.btn_registrar = ft.ElevatedButton(
+                                color = colores.PRIMARY.value,
+                                text="Registrar",
+                                width=200,
+                                bgcolor=colores.SECONDARY.value if self.current_view == "1" else colores.BLOCKCOLOR.value,
+                                on_click=lambda e: self.on_change(e, "1"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
+        self.btn_consultar = ft.ElevatedButton(
+                                color = colores.PRIMARY.value,
+                                text="Recientes",
+                                width=200,
+                                bgcolor=colores.SECONDARY.value if self.current_view == "2" else colores.BLOCKCOLOR.value,
+                                on_click=lambda e: self.on_change(e, "2"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+        self.btn_consultar_historico = ft.ElevatedButton(
+                                color = colores.PRIMARY.value,
+                                text="Historico",
+                                width=200,
+                                bgcolor=colores.SECONDARY.value if self.current_view == "3" else colores.BLOCKCOLOR.value,
+                                on_click=lambda e: self.on_change(e, "3"),
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            )
+
     def build(self):
         return ft.Container(
             content=ft.Column(
                 controls=[
+                    ft.Text("APP PQRS", size= 70, weight=ft.FontWeight.BOLD,
+                        color=colores.DEFAULT.value, text_align=ft.TextAlign.CENTER),
                     ft.Text(
-                    "Registro Petición",
+                    "Nombre Conjunto",
                     size=32,
                     weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.CENTER
                 ),
-                    self.peticion,
-                    
-                    self.descripcion_peticion,
-                    ft.Container(height=0),
-                    ft.ElevatedButton(
-                    text="Guardar",
-                    width=400,
-                    height=50,
-                    bgcolor='#673ab7',
-                    style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(10)),
-                    #todo: add function for on_click=,
-                    color=ft.colors.WHITE
+                ft.Container(height=10),
+                ft.Container(
+                    content = ft.Row(
+                        controls = [
+                            self.btn_registrar,
+                            self.btn_consultar,
+                            self.btn_consultar_historico
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=-3, 
+                    )
                 ),
-                    self.adjunto,
-                    
-                    ft.Text(
-                    '¿Quieres ir al ',
-                    color=ft.colors.DEEP_PURPLE_500,
-                    spans=[
-                        ft.TextSpan(
-                            text="Seguimiento de Peticiones?",
-                            style=ft.TextStyle(color=ft.colors.DEEP_PURPLE_500, weight=ft.FontWeight.BOLD),
-                            #todo: add function for on_click=lambda e: self.page.go("/register")
-                        )
-                    ],
-                ),
-                    ft.Container(height=0, margin=5)
+                ft.Container(height=20),
+                ft.Stack(
+                     controls=[
+                        self.formulario,
+                        self.table,
+                        self.historico
+                        ]
+                )
                 ],
-                
-                alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20,
             ),
-            bgcolor=ft.colors.GREY_200,
-            width=500,
-            
-        )
+            bgcolor=colores.BACKGROUND.value,
+            width="100%",
+            padding=10, 
+            )
+
+    def on_change(self,e, view):
+        self.current_view = view
+
+        self.btn_registrar.bgcolor = colores.SECONDARY.value if self.current_view == "1" else colores.BLOCKCOLOR.value
+        self.btn_consultar.bgcolor = colores.SECONDARY.value if self.current_view == "2" else colores.BLOCKCOLOR.value
+        self.btn_consultar_historico.bgcolor = colores.SECONDARY.value if self.current_view == "3" else colores.BLOCKCOLOR.value
         
-    def add_peticion():
-        # todo: Traer los datos del residente, colocar la fecha que se hace la peticion, y dejar el estado como pendiente de las peticiones
-        pass
-    
+        self.formulario.visible = (view == "1")
+        self.table.visible = (view == "2")
+        self.historico.visible = (view == "3")
+
+        self.update()

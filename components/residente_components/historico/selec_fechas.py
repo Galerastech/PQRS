@@ -1,5 +1,5 @@
 import flet as ft
-from components.select_date import seleccionar_date
+from components.select_date import Fecha
 from components.residente_components.ejemplo_peticiones import peticiones
 from styles.text_colors import color as colores
 
@@ -10,18 +10,15 @@ class RangoFechas(ft.UserControl):
 
         self.page = page
 
-        self.fecha_inicial = seleccionar_date("Fecha Inicial")
-        self.fecha_final = seleccionar_date("Fecha Final")
+#region fechas
+        self.fecha_inicial = Fecha("Fecha Inicial", on_date_change=self.update_fecha)
+        self.fecha_final = Fecha("Fecha Final", on_date_change=self.update_fecha)
 
-        self.fecha_inicial_valor = ft.Text(
-            value=self.fecha_inicial.selected_date.value,
-            color=colores.DEFAULT.value,
+        self.rango_seleccionado = ft.Text(
+            value= "",
+            color=colores.CONTENT.value,
         )
-        self.fecha_final_valor = ft.Text(
-            value=self.fecha_final.selected_date.value,
-            color=colores.DEFAULT.value,
-        )
-
+#region tabla
         self.tabla_peticiones = ft.DataTable(
             #expand=True,
             border= ft.border.all(2, color = colores.SECONDARY.value),
@@ -90,7 +87,7 @@ class RangoFechas(ft.UserControl):
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
-
+#region build
     def build(self):
         return ft.Column(
             controls=[
@@ -101,7 +98,7 @@ class RangoFechas(ft.UserControl):
                     ], 
                     alignment=ft.MainAxisAlignment.CENTER
                 ),
-                ft.Text(f"Ha seleccionado {self.fecha_inicial.selected_date.value} a {self.fecha_final.selected_date.value}"),
+                self.rango_seleccionado,
                 self.tabla_peticiones
             ],
             spacing=10,
@@ -110,6 +107,8 @@ class RangoFechas(ft.UserControl):
         )
         self.update()
 
+
+#region funciones
     def show_data(self):
             self.tabla_peticiones.rows= []
             for peticion in peticiones:
@@ -132,7 +131,16 @@ class RangoFechas(ft.UserControl):
                     )
                 ),
             self.update()
-
+    
+    def update_fecha(self, e):
+        fecha_inicial = self.fecha_inicial.selected_date
+        fecha_final = self.fecha_final.selected_date
+        if fecha_inicial and fecha_final:
+            print(fecha_inicial, fecha_final)
+            self.rango_seleccionado.value = f"Ha seleccionado {fecha_inicial} a {fecha_final}"
+        else:
+            self.rango_seleccionado.value = "Selecciona el rango de fechas"
+        self.update()
 
     def open_dialog(self, e):
         peticion_id = e.control.data

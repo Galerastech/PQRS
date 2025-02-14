@@ -1,13 +1,13 @@
 import flet as ft
-from ...select_date import seleccionar_date
+from components.select_date import Fecha
 from styles.text_colors import color as colores
 
 class Form_reg_contrato(ft.UserControl):
     def __init__(self):
         super().__init__()
 
-        self.fecha_inicio = seleccionar_date("Fecha Inicio")
-        self.fecha_finalizacion = seleccionar_date("Fecha Finalizacion")
+        self.fecha_inicio = Fecha("Fecha Inicio")
+        self.fecha_finalizacion = Fecha("Fecha Finalizacion")
 
         self.modalidad = ft.Dropdown(
                 #label="",

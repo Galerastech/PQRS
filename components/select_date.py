@@ -1,18 +1,18 @@
-import datetime
+from datetime import datetime, date
 import flet as ft
 from styles.text_colors import color as colores
 
-def seleccionar_date(etiqueta: str):
-    class Fecha(ft.UserControl):
-        def __init__(self):
+class Fecha(ft.UserControl):
+        def __init__(self, etiqueta: str, on_date_change=None):
             super().__init__()
+            self.on_date_change = on_date_change
             self.datepicker = ft.DatePicker(
-                first_date=datetime.date(2024, 10, 1),
-                last_date=datetime.date(2028, 12, 31),
+                first_date = date(2024, 10, 1),
+                last_date = date(2028, 12, 31),
                 on_change=self.change_date,
             )
 
-            self.selected_date = ft.Text()
+            self.selected_date = None
 
             # Botón para abrir el DatePicker
             self.button = ft.ElevatedButton(
@@ -32,7 +32,10 @@ def seleccionar_date(etiqueta: str):
             self.update()
 
         def change_date(self, e):
-            self.selected_date.value = self.datepicker.value
+            if self.datepicker.value:
+                self.selected_date = self.datepicker.value.strftime("%d-%m-%y")
+            if self.on_date_change:
+                self.on_date_change(self.selected_date)
             self.update()
 
         def build(self):
@@ -43,5 +46,3 @@ def seleccionar_date(etiqueta: str):
                     self.datepicker,
                 ]
             )
-
-    return Fecha()
