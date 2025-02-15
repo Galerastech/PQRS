@@ -13,6 +13,8 @@ from components.residente_components.menu_residente import Formato_Menu_resident
 from components.residente_components.seguimiento.tabla_peticiones import Tabla_Peticiones
 from components.residente_components.historico.selec_fechas import RangoFechas
 from components.navbar import ResponsiveNavBar
+from components.administrador.admon_residentes.consulta import Consulta_reg_residentes
+from components.administrador.admon_residentes.form_registro_resi import Form_reg_residentes
 
 def main(page: ft.Page):
     page.title = "contador de prueba"
@@ -30,9 +32,9 @@ def main(page: ft.Page):
             #Tabla_Clientes(page)
             #Form_reg_usuario(page)
             #Ejemplo(page)
-            #
-            # 
-            ResponsiveNavBar()
+            Consulta_reg_residentes(page)
+            
+            #ResponsiveNavBar()
             #formResidente_page(page)
             #Registro_clientesForm(page)
             #Registro_contratos_Form(page)
