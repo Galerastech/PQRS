@@ -178,3 +178,4 @@ class Consulta_reg_residentes(ft.UserControl):
     def close_dialog(self, e):
         self.dlg_modal.open = False
         self.page.update()
+        
