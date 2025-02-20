@@ -1,18 +1,19 @@
 from symtable import Function
-from typing import List, Any
+from typing import List, Any, Callable
 
 import flet as ft
 from flet_core.types import MainAxisAlignment, CrossAxisAlignment
 
 
 class LoginForm(ft.Column):
-    def __init__(self, spacing: int = None, alignment: MainAxisAlignment = None,
-                 horizontal_alignment: CrossAxisAlignment = None, width: int = None, login_action : Any = None):
+    def __init__(self, spacing: int = 10, alignment: MainAxisAlignment = None,
+                 horizontal_alignment: CrossAxisAlignment = None, width: int = 400, login_action : Callable[[str,str], str] = None):
         super().__init__(spacing=spacing, width=width)
         self.alignment = alignment
         self.horizontal_alignment = horizontal_alignment
         self.width = width
         self.login_action = login_action
+        self.span_text = ''
 
         # Campos de entrada
         self.email_field = ft.TextField(
@@ -64,24 +65,33 @@ class LoginForm(ft.Column):
         )
 
         self.span = ft.Text('Error: ',
-                            [ft.TextSpan('Aqui va un span', style=ft.TextStyle(color=ft.colors.RED))],
+                            [ft.TextSpan(self.span_text, style=ft.TextStyle(color=ft.colors.RED))],
                             visible=False)
 
         self.controls = [
-            ft.Text(
-                "Iniciar Sesión",
-                size=32,
-                color=ft.colors.BLACK,
-                weight=ft.FontWeight.BOLD,
-                text_align=ft.TextAlign.CENTER,
+            ft.Container(
+                content=ft.Text(
+                    "Iniciar Sesión",
+                    size=32,
+                    color=ft.colors.BLACK,
+                    weight=ft.FontWeight.BOLD,
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                margin=ft.margin.only(bottom=20),
             ),
             self.span,
-            self.email_field,
-            self.password_field,
+            ft.Container(
+                content=self.email_field,
+                margin=ft.margin.only(bottom=10),
+            ),
+            ft.Container(
+                content=self.password_field,
+                margin=ft.margin.only(bottom=20),
+            ),
             self.login_button,
             ft.Container(
                 content=ft.Divider(thickness=2, color=ft.colors.GREY, opacity=0.2),
-                width=300,
+                margin=ft.margin.symmetric(vertical=10),
             ),
             self.google_login_button,
         ]
@@ -95,8 +105,8 @@ class LoginForm(ft.Column):
             self.span.visible = True
         else:
             self.span.visible = False
+            response = self.login_action(email,password)
+            self.span.spans[0].text = response
+            self.span.visible = bool(response)
         self.page.update()
 
-        response = self.login_action(email,password)
-
-        print(f'response : {response}')

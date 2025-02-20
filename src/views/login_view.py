@@ -23,7 +23,6 @@ class LoginView(ft.Column):
             border_radius=ft.border_radius.only(top_left=12, bottom_left=12),
         )
 
-        # Formulario de inicio de sesión
         self.login_form = LoginForm(
             spacing=20,
             alignment=ft.MainAxisAlignment.CENTER,
@@ -32,7 +31,6 @@ class LoginView(ft.Column):
             login_action=self.auth.login
         )
 
-        # Controles principales
         self.controls = [
             ft.ResponsiveRow(
                 controls=[
