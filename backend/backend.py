@@ -1,8 +1,13 @@
-from fastapi import FastAPI
-from backend.routes import auth, tenant
-from fastapi import APIRouter
+from fastapi import FastAPI, HTTPException
+from fastapi.params import Depends
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import crud
 
-router = APIRouter()
+from backend import schemas
+from backend.database import get_db
+from backend.models import User
+from backend.schemas import UserSchema
+from backend.services import UserService
 
 app = FastAPI(
     title="PQRS",
@@ -10,6 +15,17 @@ app = FastAPI(
 
 )
 
-app.include_router(auth.router, tags=["Auth"])
-app.include_router(tenant.router, tags=["Tenant"])
-# app.include_router(tenant.router, tags=["Auth"])
+user_service = UserService()
+
+
+@app.post("/auth/signup")
+async def sign_up(user: UserSchema, db: Session = Depends(get_db)):
+    exist_user = db.query(User).filter(
+        (User.email == user.email) |
+        (User.username == user.username)
+    ).first()
+
+    if exist_user:
+        raise HTTPException(status_code=400, detail="Usuario ya existe en la base de datos")
+    new_user = user_service.create_user(db=db, user=user)
+    return new_user

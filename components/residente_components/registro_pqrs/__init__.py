@@ -1,0 +1,1 @@
+from .form_registro import Form_reg_pqrs

@@ -1,0 +1,2 @@
+from .formulario_contratos import Form_reg_contrato
+from .tabla_contratos import Tabla_Contratos

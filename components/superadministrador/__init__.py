@@ -1,0 +1,6 @@
+from .form_carga_masiva import Carga_masiva_Form
+from .form_reg_contratos import Registro_contratos_Form
+from .tabla_clientes import Tabla_Clientes
+from .formato_menu import Formato_Menu
+from .form_registro_clientes import Registro_clientesForm
+from .form_reg_usuario import Form_reg_usuario
