@@ -9,7 +9,6 @@ from pages.administrador.menu_administrador_page import Formato_Menu
 from pages.administrador.normas_admon_pages import Admon_Normas
 from pages.administrador.pqrs_admon_pages import Administrador_PQRS
 from pages.administrador.residentes_admon_page import Admon_residentes
-#TODO HACER PAGES DE LOS COMPONENTES NUEVOS
 
 def main(page: ft.Page):
     page.title = "contador de prueba"
