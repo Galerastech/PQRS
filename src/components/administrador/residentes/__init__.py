@@ -1,0 +1,3 @@
+from .form_reg_residentes import Form_reg_residentes
+from .admon_residentes_component import Admon_residentes
+from .consulta_residente import Consulta_reg_residentes

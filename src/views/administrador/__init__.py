@@ -1,0 +1,4 @@
+from .menu_admon_pages import Formato_Menu
+from .normas_admon_pages import Admon_Normas_Page
+from .pqrs_admon_pages import Admon_PQRS_Page
+from .residente_admon_pages import Admon_Residentes_Page

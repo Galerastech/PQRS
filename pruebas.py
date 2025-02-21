@@ -1,14 +1,18 @@
 import flet as ft
-from pages.SuperAdministrador.register_client_page import Registro_clientesForm
-from pages.SuperAdministrador.menu import MenuPage
-from pages.SuperAdministrador.registro_contratos_page import Registro_contratos_Form
-from pages.SuperAdministrador.carga_masiva_page import Carga_masiva_Form
-from pages.residentes_pages.menu_page import MenuPageResidente
-from pages.residentes_pages.peticiones_page import formResidente_page
-from pages.administrador.menu_administrador_page import Formato_Menu
-from pages.administrador.normas_admon_pages import Admon_Normas
-from pages.administrador.pqrs_admon_pages import Administrador_PQRS
-from pages.administrador.residentes_admon_page import Admon_residentes
+from src.views.administrador.menu_admon_pages import MenuPageAdministrador
+from src.views.administrador.normas_admon_pages import Admon_Normas_Page
+from src.views.administrador.pqrs_admon_pages import Admon_PQRS_Page
+from src.views.administrador.residente_admon_pages import Admon_Residentes_Page
+
+#Residente
+from src.views.residente.menu_residente_page import Formato_Menu_residentes
+from src.views.residente.peticiones_residente_page import formResidente_page
+
+#SuperAdministrador
+from src.views.superadministrador.menu_superadmon_page import Menu_superadmon_Page
+from src.views.superadministrador.carga_masiva_page import Carga_masiva_page
+from src.views.superadministrador.registro_cliente_page import Registro_cliente_page
+from src.views.superadministrador.registro_contratos_page import Registro_Contratos_Page
 
 def main(page: ft.Page):
     page.title = "contador de prueba"
@@ -18,7 +22,7 @@ def main(page: ft.Page):
     page.theme_mode  = "LIGHT"
     page.vertical_alignment= ft.MainAxisAlignment.CENTER # alineamos 
     page.add(
-            Formato_Menu()
+            MenuPageAdministrador()
             )
 
 ft.app(main)

@@ -1,0 +1,3 @@
+from .form_contratos import Form_reg_contrato
+from .tabla_contratos import Tabla_Contratos
+from .admon_contratos_component import Registro_contratos_Form

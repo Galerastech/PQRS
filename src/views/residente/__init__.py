@@ -1,0 +1,2 @@
+from .menu_residente_page import Formato_Menu_residentes
+from .peticiones_residente_page import formResidente_page

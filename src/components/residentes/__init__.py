@@ -1,0 +1,2 @@
+from .admon_residentes_component import Radicar_Peticion_Form
+from .menu_resident_component import Formato_Menu_residentes
