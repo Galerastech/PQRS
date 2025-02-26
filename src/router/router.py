@@ -19,9 +19,10 @@ class AppRouter:
             token = self.page.session.get('token')
             role = self.auth.get_user_role(token)
             if role == 'administrator':
-                self.page.go("/admin/dashboard")
+                self.page.go("/administrador/home")
+            
             elif role == 'superadmin':
-                self.page.go("/superadmin/dashboard")
+                self.page.go("/superadministrador/home")
             elif role == 'resident':
                 self.page.go("/resident/dashboard")
             else:
