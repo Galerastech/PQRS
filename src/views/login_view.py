@@ -3,7 +3,6 @@ from time import sleep
 import flet as ft
 
 from src.components.user_login_form import LoginForm
-from src.services.api import AuthService
 from src.services.auth import AuthClient
 
 

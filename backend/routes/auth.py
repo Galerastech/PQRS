@@ -16,29 +16,22 @@ async def login(
         form_data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db),
 ):
-    try:
-        user = authenticate_user(
-            db, email=form_data.username, password=form_data.password
-        )
+    user = authenticate_user(db, email=form_data.username, password=form_data.password)
 
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales incorrectas Verifique nuevamente",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        access_token = create_access_token(
-            data={"sub": str(user.id), "tenant_id": user.tenant_id, "role": user.role, "email": user.email}
-        )
-        return TokenSchema.model_validate(access_token)
-
-    except AuthenticationError as e:
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(e),
+            detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    access_token = create_access_token(
+        data={"sub": user.email,
+              'tenant_id': user.tenant_id,
+              'role': user.role,
+              'email': user.email,
+              }
+    )
+    return TokenSchema.model_validate(access_token)
 
 
 @router.get("/users/me", response_model=UserSchema)
