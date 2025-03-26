@@ -1,6 +1,7 @@
 import flet as ft
 
-from router import Router
+from src.router import AppRouter
+from src.services.auth import AuthClient
 
 
 def main(page: ft.Page):
@@ -12,7 +13,7 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme = ft.Theme(font_family="Poppins Regular")
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme_mode = ft.ThemeMode.SYSTEM
 
     page.fonts = {
         "SF Pro Bold": "fonts/SFProText-Bold.ttf",
@@ -23,7 +24,6 @@ def main(page: ft.Page):
         "SF Pro Regular": "fonts/SFProText-Regular.ttf",
         "SF Pro Semibold": "fonts/SFProText-Semibold.ttf",
         "SF Pro SemiboldItalic": "fonts/SFProText-SemiboldItalic.ttf",
-
         "Poppins ThinItalic": "fonts/poppins/Poppins-ThinItalic.ttf",
         "Poppins Thin": "fonts/poppins/Poppins-Thin.ttf",
         "Poppins Semibold": "fonts/poppins/Poppins-Semibold.ttf",
@@ -44,7 +44,11 @@ def main(page: ft.Page):
         "Poppins Black": "fonts/poppins/Poppins-Black.ttf",
     }
 
-    Router(page)
+    auth = AuthClient(api_url="http://localhost:8001")
+
+    router = AppRouter(page, auth)
+
+    page.update()
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets")
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, assets_dir="assets", port=8000)

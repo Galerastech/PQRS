@@ -1,90 +1,46 @@
-from datetime import timedelta
-
+from multiprocessing import AuthenticationError
 from fastapi import APIRouter, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
 from backend.database import get_db
-from backend.models import UserRole
-from backend.schemas import UserSchema, UserLoginSchema, TokenSchema
-from backend.schemas.user_schema import UserRegister, AdminSchemaRequest
-from backend.services import AuthService
-from config import settings
+from backend.models import User
+from backend.schemas import UserSchema, TokenSchema
+from backend.security.security import create_access_token, authenticate_user, get_current_active_user
 
-router = APIRouter(prefix="/auth")
-
-auth_service = AuthService()
+router = APIRouter(prefix="/auth", )
 
 
-# TODO: verificar los schemas y validar casos
-@router.post("/signup", response_model=UserSchema)
-async def signup(data: UserRegister, db: Session = Depends(get_db)):
+@router.post("/token", response_model=TokenSchema)
+async def login(
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        db: Session = Depends(get_db),
+):
     try:
-        existing_user = auth_service.check_user_existence(db, data)
-        if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Usuario ya se encuentra en la base de datos")
-        new_user = auth_service.create_user(db=db, user=data)
-        return UserSchema.model_validate(new_user)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+        user = authenticate_user(
+            db, email=form_data.username, password=form_data.password
         )
-
-
-#  TODO: Verificar que lo que realmente necesito se muestre en el dahsboard tanto del super admin comoo del admin
-@router.post("/signin", response_model=TokenSchema)
-async def login(data: UserLoginSchema, db: Session = Depends(get_db)):
-    try:
-        user = auth_service.authenticate_user(
-            db, data.email,
-            data.password)
 
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password",
-                headers={"WWW-Authenticate": "Bearer"}
+                detail="Credenciales incorrectas Verifique nuevamente",
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
-        access_token = auth_service.create_access_token(
-            data={"sub": user.id, 'role': user.role},
-            expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+        access_token = create_access_token(
+            data={"sub": str(user.id), "tenant_id": user.tenant_id, "role": user.role, "email": user.email}
         )
-        return TokenSchema(access_token=access_token, token_type="bearer",
-                           expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-                           user=UserSchema.model_validate(user))
-    except ValueError as e:
+        return TokenSchema.model_validate(access_token)
+
+    except AuthenticationError as e:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
 
-@router.post("/superuser", response_model=TokenSchema)
-def superpersperadmin(data: AdminSchemaRequest, db: Session = Depends(get_db)):
-    try:
-        user = auth_service.authenticate_user(
-            db, data.email,
-            data.password)
-
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password",
-                headers={"WWW-Authenticate": "Bearer"}
-            )
-
-        access_token = auth_service.create_access_token(
-            data={"sub": user.id, 'role': user.role},
-            expires_delta=timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES))
-        )
-        return TokenSchema(access_token=access_token, token_type="bearer",
-                           expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
-                           user=UserSchema.model_validate(user))
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+@router.get("/users/me", response_model=UserSchema)
+def read_users_me(current_user: User = Depends(get_current_active_user)) -> UserSchema:
+    return current_user

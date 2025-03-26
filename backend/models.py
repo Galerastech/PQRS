@@ -18,9 +18,9 @@ class Tenant(Base):
 
 
 class UserRole(str,enum.Enum):
-    resident = 'residente'
+    resident = 'resident'
     admin = 'administrator'
-    superadmin = 'superadministrator'
+    superadmin = 'superadmin'
 
 
 class User(Base):
@@ -32,7 +32,7 @@ class User(Base):
     apartment = Column(Integer, nullable=False, default=0)
     phone = Column(String(100), nullable=True)
     role = Column(Enum(UserRole), nullable=True, default=UserRole.resident)
-    status = Column(String(20), nullable=False, default='activo')
+    status = Column(String(20), nullable=False, default='active')
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     tenant_id = Column(Integer, ForeignKey('tenants.id', ondelete='CASCADE'), nullable=True)
